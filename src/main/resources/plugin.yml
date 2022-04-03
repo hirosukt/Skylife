@@ -1,0 +1,16 @@
+name: Skylife
+version: '0.1'
+main: love.chihuyu.skylife.Skylife
+api-version: 1.18
+authors: [ Hirosuke ]
+description: Original skyblock plugin for chihuyu.
+website: chihuyu.love
+commands:
+  barter:
+permissions:
+  skylife.command.*:
+    default: op
+    children:
+      skylife.command.market: true
+  skylife.command.market:
+    default: true
