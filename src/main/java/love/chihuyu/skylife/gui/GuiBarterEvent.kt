@@ -37,7 +37,7 @@ object GuiBarterEvent : Listener {
 
         fun updateTradableItems() {
             ItemDataManager
-                .tradable(tradableItems)
+                .tradable(tradeItems)
                 ?.forEach { item -> tradableItems.add(item) }
         }
 
