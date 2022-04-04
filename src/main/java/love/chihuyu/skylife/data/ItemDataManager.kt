@@ -27,6 +27,7 @@ object ItemDataManager {
         }
     }
 
+    fun tradable(material: Material) = data.find { it.contains(material) }
     fun tradable(material: MutableList<Material>) = data.filter { it.any { item -> item in material } }
 
     fun getMaterialNameList(): List<String> {

@@ -52,7 +52,7 @@ object GuiBarterEvent : Listener {
                 if (it % 9 > 2) {
                     try {
                         val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
-                        barterInv.setItem(it, ItemUtil.create(material))
+                        barterInv.setItem(it, ItemUtil.create(material, lore = listOf("左クリックで1個交換できます", "右クリックで1st交換できます")))
                     } catch (e: IndexOutOfBoundsException) {
                         barterInv.setItem(it, GuiBarter.fillPanel)
                     }
@@ -62,7 +62,7 @@ object GuiBarterEvent : Listener {
         }
 
         if (clickedInvType == playerInv.type) {
-            val clone = clickedItem.clone()
+            val clone = ItemUtil.create(clickedItem.type, count = clickedItem.amount)
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
             updateInventoryItems()
@@ -77,7 +77,7 @@ object GuiBarterEvent : Listener {
             }
 
             if (slot % 9 <= 1) {
-                val clone = clickedItem.clone()
+                val clone = ItemUtil.create(clickedItem.type, count = clickedItem.amount)
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
             } else if (slot % 9 >= 3) {
@@ -87,7 +87,19 @@ object GuiBarterEvent : Listener {
                         updateInventoryItems()
                     }
                     ClickType.LEFT -> {
-                        // 最大1スタック取る処理
+                        // 左側からひとつ減らす処理
+                        fun isTradable(trade: Material): Boolean {
+                            return ItemDataManager.tradable(clickedItem.type)?.contains(trade) ?: false
+                        }
+                        for (i in 0..53) {
+                            if (i % 9 <= 1) {
+                                val item = barterInv.getItem(i)
+                                if (item == null || !isTradable(item.type)) continue
+                                item.amount -= 1
+                                playerInv.addItem(ItemUtil.create(clickedItem.type))
+                                break
+                            }
+                        }
                     }
                     else -> return
                 }

@@ -5,14 +5,14 @@ import org.bukkit.inventory.ItemStack
 
 object ItemUtil {
 
-    fun create(material: Material, name: String? = null, count: Int = 1, unbreakable: Boolean = false): ItemStack {
+    fun create(material: Material, name: String? = null, count: Int = 1, unbreakable: Boolean = false, lore: List<String> = listOf()): ItemStack {
         val item = ItemStack(material)
         val meta = item.itemMeta
 
         meta?.isUnbreakable = unbreakable
         meta?.setDisplayName(name)
+        meta?.lore = lore
         item.amount = count
-        meta?.setCustomModelData(1)
         item.itemMeta = meta
 
         return item
