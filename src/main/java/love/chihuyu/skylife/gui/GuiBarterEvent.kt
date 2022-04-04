@@ -45,7 +45,7 @@ object GuiBarterEvent : Listener {
                 .forEach { it.forEach { item -> tradableItems.add(item) } }
         }
 
-        fun updateInventoryItems() {
+        fun updateGui() {
             loadTradeItemsFromInv()
             loadTradableItemsFromInv()
             val chunkedTradableItems = tradableItems.chunked(36)
@@ -74,7 +74,7 @@ object GuiBarterEvent : Listener {
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
 
-            updateInventoryItems()
+            updateGui()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
 
@@ -120,11 +120,11 @@ object GuiBarterEvent : Listener {
                     else -> return
                 }
             }
-            updateInventoryItems()
+            updateGui()
 
             if (barterInv.getItem(3)?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
-                updateInventoryItems()
+                updateGui()
             }
         }
     }
