@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 
 object GuiBarterEvent : Listener {
 
@@ -62,24 +63,18 @@ object GuiBarterEvent : Listener {
             val clone = clickedItem.clone()
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
-
             updateInventoryItems()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
 
-            if (slot % 9 == 2) {
-                when (slot) {
-                    38 -> {
-                        if (pageTemp[player] == 0) return
-                        pageTemp[player] = pageTemp[player]?.dec() ?: 0
-                    }
-                    47 -> {
-                        if (pageTemp[player] == tradableItems.chunked(36).size) return
-                        pageTemp[player] = pageTemp[player]?.inc() ?: 0
-                    }
-                    else -> return
-                }
-            } else if (slot % 9 <= 1) {
+            // paging
+            if (slot == 38 && pageTemp[player] != 0) {
+                pageTemp[player] = pageTemp[player]?.dec() ?: 0
+            } else if (slot == 47 && barterInv.getItem(53)?.itemMeta?.displayName != " ") {
+                pageTemp[player] = pageTemp[player]?.inc() ?: 0
+            }
+
+            if (slot % 9 <= 1) {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
@@ -96,6 +91,24 @@ object GuiBarterEvent : Listener {
                 }
             }
             updateInventoryItems()
+        }
+    }
+
+    @EventHandler
+    fun onClose(event: InventoryCloseEvent) {
+        if (event.view.title != "Barter") return
+
+        val playerInv = event.view.bottomInventory
+        val barterInv = event.view.topInventory
+        val player = event.player
+
+        (0..53).forEach {
+            if (it % 9 <= 1) {
+                val item = barterInv.getItem(it)
+                if (item !== null) playerInv.addItem(item).forEach { drop ->
+                    player.world.dropItemNaturally(player.location, drop.value)
+                }
+            }
         }
     }
 }

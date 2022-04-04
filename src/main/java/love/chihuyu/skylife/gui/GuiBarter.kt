@@ -15,8 +15,9 @@ object GuiBarter {
     private val previousPagePanel = ItemUtil.create(Material.RED_STAINED_GLASS_PANE, ChatColor.RED.toString() + "Previous Page")
 
     fun open(player: HumanEntity) {
-        val inventory = Bukkit.createInventory(null, 54, "Barter")
+        GuiBarterEvent.pageTemp[player as Player] = 0
 
+        val inventory = Bukkit.createInventory(null, 54, "Barter")
         (0..53).forEach {
             if (it % 9 >= 3) inventory.setItem(it, fillPanel)
             if (it % 9 == 2) inventory.setItem(it, when (it) {
@@ -25,8 +26,6 @@ object GuiBarter {
                 else -> separatorPanel
             })
         }
-
-        GuiBarterEvent.pageTemp[player as Player] = 0
 
         player.openInventory(inventory)
     }

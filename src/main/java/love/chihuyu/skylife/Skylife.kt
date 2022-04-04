@@ -1,5 +1,6 @@
 package love.chihuyu.skylife
 
+import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
@@ -36,6 +37,8 @@ class Skylife : JavaPlugin(), Listener {
         saveResource("config.yml", false)
 
         listOf(GuiBarterCommand).forEach { it.register() }
+
+        ItemDataManager.checkDuplicate()
 
         Database.connect("jdbc:sqlite:${plugin.dataFolder}\\userstats.db", driver = "org.sqlite.JDBC")
         transaction {
