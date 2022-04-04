@@ -11,6 +11,6 @@ permissions:
   skylife.command.*:
     default: op
     children:
-      skylife.command.market: true
-  skylife.command.market:
+      skylife.command.barter: true
+  skylife.command.barter:
     default: true

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 
 object GuiBarterCommand : Command("barter") {
     override fun onCommand(sender: CommandSender, label: String, args: Array<out String>) {
-        if (sender !is Player || !sender.hasPermission("skylife.command.market")) return
+        if (sender !is Player || !sender.hasPermission("skylife.command.barter")) return
 
         GuiBarter.open(sender)
     }
