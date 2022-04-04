@@ -27,7 +27,7 @@ object GuiBarterEvent : Listener {
         val tradeItems = mutableListOf<Material>()
         val tradableItems = mutableSetOf<Material>()
 
-        fun updateTradeItems() {
+        fun setTradeItems() {
             (0..53).forEach {
                 if (it % 9 >= 2) return
                 val item = barterInv.getItem(it)
@@ -35,7 +35,7 @@ object GuiBarterEvent : Listener {
             }
         }
 
-        fun updateTradableItems() {
+        fun setTradableItems() {
             (0..53).forEach {
                 if (it % 9 >= 3) barterInv.setItem(it, GuiBarter.fillPanel)
             }
@@ -45,8 +45,8 @@ object GuiBarterEvent : Listener {
         }
 
         fun updateInventoryItems() {
-            updateTradeItems()
-            updateTradableItems()
+            setTradeItems()
+            setTradableItems()
             val chunkedTradableItems = tradableItems.chunked(36)
             var index = 0
             (0..53).forEach {
@@ -59,7 +59,6 @@ object GuiBarterEvent : Listener {
         }
 
         if (clickedInvType == playerInv.type) {
-            // hidari gawa
             val clone = clickedItem.clone()
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
@@ -84,7 +83,6 @@ object GuiBarterEvent : Listener {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
-                updateInventoryItems()
             } else {
                 when (event.click) {
                     ClickType.RIGHT -> {
@@ -97,6 +95,7 @@ object GuiBarterEvent : Listener {
                     else -> return
                 }
             }
+            updateInventoryItems()
         }
     }
 }

@@ -5,7 +5,7 @@ import org.bukkit.Material
 object ItemDataManager {
 
     val parents = mutableListOf<MutableList<Material>>()
-    val data = mutableListOf(
+    private val data = mutableListOf(
         mutableListOf(Material.STONE, Material.DIRT, Material.COBBLESTONE),
         mutableListOf(Material.END_STONE, Material.END_STONE_BRICKS)
     )
