@@ -63,9 +63,10 @@ object GuiBarterEvent : Listener {
         }
 
         if (clickedInvType == playerInv.type) {
-            val clone = ItemUtil.create(clickedItem.type, count = clickedItem.amount)
+            val clone = clickedItem.clone()
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
+
             updateInventoryItems()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
@@ -78,7 +79,7 @@ object GuiBarterEvent : Listener {
             }
 
             if (slot % 9 <= 1) {
-                val clone = ItemUtil.create(clickedItem.type, count = clickedItem.amount)
+                val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
             } else if (slot % 9 >= 3) {
@@ -89,13 +90,14 @@ object GuiBarterEvent : Listener {
 
                 fun trade() {
                     for (i in 0..53) {
-                        if (i % 9 <= 1) {
-                            val item = barterInv.getItem(i)
-                            if (item == null || !isTradable(item.type)) continue
-                            item.amount -= 1
-                            playerInv.addItem(ItemUtil.create(clickedItem.type))
-                            break
-                        }
+                        if (i % 9 >= 2) continue
+
+                        val item = barterInv.getItem(i)
+                        if (item == null || !isTradable(item.type)) continue
+
+                        item.amount -= 1
+                        playerInv.addItem(ItemUtil.create(clickedItem.type))
+                        break
                     }
                 }
 

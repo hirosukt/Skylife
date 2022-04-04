@@ -4,7 +4,7 @@ import love.chihuyu.skylife.Skylife.Companion.plugin
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-object ItemDataManager {
+object  ItemDataManager {
 
     private val data = mutableListOf(
         mutableListOf(Material.STONE, Material.DIRT, Material.COBBLESTONE),
@@ -23,7 +23,7 @@ object ItemDataManager {
             }
         }
         if (dupItems.isNotEmpty()) {
-            plugin.logger.info(ChatColor.RED.toString() + "these items are duplicated. \n$dupItems")
+            plugin.logger.info("${ChatColor.RED}these items are duplicated. \n$dupItems")
         }
     }
 

@@ -2,11 +2,13 @@ name: Skylife
 version: '0.1'
 main: love.chihuyu.skylife.Skylife
 api-version: 1.18
-authors: [ Hirosuke ]
+authors: [ Hirosuke, Tenzyu ]
 description: Original skyblock plugin for chihuyu.
 website: chihuyu.love
 commands:
   barter:
+    aliases:
+      - "ba"
 permissions:
   skylife.command.*:
     default: op
