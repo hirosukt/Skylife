@@ -83,8 +83,7 @@ object GuiBarterEvent : Listener {
             } else if (slot % 9 >= 3) {
                 when (event.click) {
                     ClickType.RIGHT -> {
-                        // 一個取る処理
-                        updateInventoryItems()
+                        // 最大1スタック取る処理
                     }
                     ClickType.LEFT -> {
                         // 左側からひとつ減らす処理
