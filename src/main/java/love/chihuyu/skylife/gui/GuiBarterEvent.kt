@@ -65,6 +65,7 @@ object GuiBarterEvent : Listener {
                     }
                 }
             }
+
             player.updateInventory()
         }
 
@@ -109,6 +110,8 @@ object GuiBarterEvent : Listener {
                     }
                 }
 
+                if (isTradable(clickedItem.type)) player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
+
                 when (event.click) {
                     ClickType.RIGHT -> repeat(64) { trade() }
                     ClickType.SHIFT_RIGHT -> repeat(32) { trade() }
@@ -116,10 +119,13 @@ object GuiBarterEvent : Listener {
                     ClickType.LEFT -> trade()
                     else -> return
                 }
-
-                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateInventoryItems()
+
+            if (barterInv.getItem(3)?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
+                pageTemp[player] = pageTemp[player]?.dec() ?: 0
+                updateInventoryItems()
+            }
         }
     }
 
