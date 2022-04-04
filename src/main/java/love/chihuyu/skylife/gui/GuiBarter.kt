@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 
 object GuiBarter {
 
-    private val fillPanel = ItemUtil.create(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " ")
+    val fillPanel = ItemUtil.create(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " ")
     private val separatorPanel = ItemUtil.create(Material.WHITE_STAINED_GLASS_PANE, " ")
     private val nextPagePanel = ItemUtil.create(Material.LIME_STAINED_GLASS_PANE, ChatColor.GREEN.toString() + "Next Page")
     private val previousPagePanel = ItemUtil.create(Material.RED_STAINED_GLASS_PANE, ChatColor.RED.toString() + "Previous Page")

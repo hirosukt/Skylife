@@ -36,6 +36,9 @@ object GuiBarterEvent : Listener {
         }
 
         fun updateTradableItems() {
+            (0..53).forEach {
+                if (it % 9 >= 3) barterInv.setItem(it, GuiBarter.fillPanel)
+            }
             ItemDataManager
                 .tradable(tradeItems)
                 ?.forEach { item -> tradableItems.add(item) }
