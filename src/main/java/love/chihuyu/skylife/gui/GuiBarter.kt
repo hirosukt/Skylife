@@ -4,6 +4,7 @@ import love.chihuyu.skylife.util.ItemUtil
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 
@@ -16,6 +17,8 @@ object GuiBarter {
 
     fun open(player: HumanEntity) {
         GuiBarterEvent.pageTemp[player as Player] = 0
+
+        player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_OPEN, 0.8f, 1f)
 
         val inventory = Bukkit.createInventory(null, 54, "Barter")
         (0..53).forEach {

@@ -3,6 +3,7 @@ package love.chihuyu.skylife.gui
 import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.util.ItemUtil
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -53,7 +54,11 @@ object GuiBarterEvent : Listener {
                     try {
                         val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
                         barterInv.setItem(it,
-                            ItemUtil.create(material, lore = listOf("左クリックで1個交換できます", "右クリックで1st交換できます")))
+                            ItemUtil.create(material,
+                                lore = listOf("左クリック -> 1個",
+                                    "右クリック -> 64個",
+                                    "シフト+左 -> 16個",
+                                    "シフト+右 -> 32個")))
                     } catch (e: IndexOutOfBoundsException) {
                         barterInv.setItem(it, GuiBarter.fillPanel)
                     }
@@ -74,8 +79,10 @@ object GuiBarterEvent : Listener {
             // paging
             if (slot == 38 && pageTemp[player] != 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
+                player.playSound(player.location, Sound.UI_BUTTON_CLICK, 0.8f, 1f)
             } else if (slot == 47 && barterInv.getItem(53)?.itemMeta?.displayName != " ") {
                 pageTemp[player] = pageTemp[player]?.inc() ?: 0
+                player.playSound(player.location, Sound.UI_BUTTON_CLICK, 0.8f, 1f)
             }
 
             if (slot % 9 <= 1) {
@@ -103,9 +110,13 @@ object GuiBarterEvent : Listener {
 
                 when (event.click) {
                     ClickType.RIGHT -> repeat(64) { trade() }
+                    ClickType.SHIFT_RIGHT -> repeat(32) { trade() }
+                    ClickType.SHIFT_LEFT -> repeat(16) { trade() }
                     ClickType.LEFT -> trade()
                     else -> return
                 }
+
+                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateInventoryItems()
         }
@@ -117,7 +128,9 @@ object GuiBarterEvent : Listener {
 
         val playerInv = event.view.bottomInventory
         val barterInv = event.view.topInventory
-        val player = event.player
+        val player = event.player as Player
+
+        player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
 
         (0..53).forEach {
             if (it % 9 <= 1) {

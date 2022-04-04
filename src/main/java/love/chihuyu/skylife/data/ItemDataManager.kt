@@ -4,7 +4,7 @@ import love.chihuyu.skylife.Skylife.Companion.plugin
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-object  ItemDataManager {
+object ItemDataManager {
 
     private val data = mutableListOf(
         mutableListOf(Material.STONE, Material.DIRT, Material.COBBLESTONE),
