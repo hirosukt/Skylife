@@ -15,7 +15,8 @@ object ItemDataManager {
         mutableListOf(Material.ACACIA_LEAVES, Material.AZALEA_LEAVES, Material.BIRCH_LEAVES, Material.DARK_OAK_LEAVES, Material.JUNGLE_LEAVES, Material.FLOWERING_AZALEA_LEAVES, Material.OAK_LEAVES, Material.SPRUCE_LEAVES),
         mutableListOf(Material.ACACIA_SAPLING, Material.BIRCH_SAPLING, Material.OAK_SAPLING, Material.DARK_OAK_SAPLING, Material.JUNGLE_SAPLING, Material.SPRUCE_SAPLING),
         mutableListOf(Material.ACACIA_LOG, Material.BIRCH_LOG, Material.OAK_LOG, Material.DARK_OAK_LOG, Material.JUNGLE_LOG, Material.SPRUCE_LOG, Material.WARPED_STEM, Material.CRIMSON_STEM),
-        mutableListOf(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE, Material.SNOW_BLOCK)
+        mutableListOf(Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE, Material.SNOW_BLOCK),
+        mutableListOf(Material.DEAD_BUSH, Material.STICK)
     )
 
     fun checkDuplicate() {
