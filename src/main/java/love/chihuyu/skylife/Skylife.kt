@@ -5,6 +5,7 @@ import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
 import net.md_5.bungee.api.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
@@ -73,6 +74,7 @@ class Skylife : JavaPlugin(), Listener {
                 }
 
                 event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
+                player.gameMode = GameMode.SURVIVAL
                 player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
                 player.teleport(Location(player.world, 0.0, 64.0, 0.0))
                 player.sendTitle(ChatColor.GOLD.toString() + "~= Welcome to Skylife =~", "")
