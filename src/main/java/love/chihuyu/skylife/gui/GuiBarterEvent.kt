@@ -28,32 +28,34 @@ object GuiBarterEvent : Listener {
         val tradeItems = mutableListOf<Material>()
         val tradableItems = mutableSetOf<Material>()
 
-        fun setTradeItems() {
+        fun loadTradeItemsFromInv() {
             (0..53).forEach {
-                if (it % 9 >= 2) return
-                val item = barterInv.getItem(it)
-                if (item !== null) tradeItems.add(item.type)
+                if (it % 9 <= 1) {
+                    val item = barterInv.getItem(it)
+                    if (item !== null) tradeItems.add(item.type)
+                }
             }
         }
 
-        fun setTradableItems() {
-            (0..53).forEach {
-                if (it % 9 >= 3) barterInv.setItem(it, GuiBarter.fillPanel)
-            }
+        fun loadTradableItemsFromInv() {
             ItemDataManager
                 .tradable(tradeItems)
                 .forEach { it.forEach { item -> tradableItems.add(item) } }
         }
 
         fun updateInventoryItems() {
-            setTradeItems()
-            setTradableItems()
+            loadTradeItemsFromInv()
+            loadTradableItemsFromInv()
             val chunkedTradableItems = tradableItems.chunked(36)
             var index = 0
             (0..53).forEach {
                 if (it % 9 > 2) {
-                    val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
-                    barterInv.setItem(it, ItemUtil.create(material))
+                    try {
+                        val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
+                        barterInv.setItem(it, ItemUtil.create(material))
+                    } catch (e: IndexOutOfBoundsException) {
+                        barterInv.setItem(it, GuiBarter.fillPanel)
+                    }
                 }
             }
             player.updateInventory()
@@ -78,7 +80,7 @@ object GuiBarterEvent : Listener {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
-            } else {
+            } else if (slot % 9 >= 3) {
                 when (event.click) {
                     ClickType.RIGHT -> {
                         // 一個取る処理

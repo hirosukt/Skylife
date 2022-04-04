@@ -21,8 +21,8 @@ object GuiBarter {
         (0..53).forEach {
             if (it % 9 >= 3) inventory.setItem(it, fillPanel)
             if (it % 9 == 2) inventory.setItem(it, when (it) {
-                38 -> nextPagePanel
-                47 -> previousPagePanel
+                38 -> previousPagePanel
+                47 -> nextPagePanel
                 else -> separatorPanel
             })
         }
