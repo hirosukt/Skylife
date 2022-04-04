@@ -10,7 +10,7 @@ object ItemDataManager {
         mutableListOf(Material.END_STONE, Material.END_STONE_BRICKS)
     )
 
-    fun tradable(material: MutableList<Material>) = data.firstOrNull { it.any { item -> item in material } }
+    fun tradable(material: MutableList<Material>) = data.filter { it.any { item -> item in material } }
 
     fun getMaterialNameList(): List<String> {
         return Material.values().map { it.name }

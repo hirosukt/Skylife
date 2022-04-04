@@ -41,7 +41,7 @@ object GuiBarterEvent : Listener {
             }
             ItemDataManager
                 .tradable(tradeItems)
-                ?.forEach { item -> tradableItems.add(item) }
+                .forEach { it.forEach { item -> tradableItems.add(item) } }
         }
 
         fun updateInventoryItems() {
@@ -80,8 +80,6 @@ object GuiBarterEvent : Listener {
                     }
                     else -> return
                 }
-                player.closeInventory()
-                GuiBarter.open(player)
             } else if (slot % 9 <= 1) {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
