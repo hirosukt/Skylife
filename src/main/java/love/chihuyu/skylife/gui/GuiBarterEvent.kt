@@ -86,6 +86,7 @@ object GuiBarterEvent : Listener {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
+                updateInventoryItems()
             } else {
                 when (event.click) {
                     ClickType.RIGHT -> {
