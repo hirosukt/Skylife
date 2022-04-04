@@ -116,7 +116,7 @@ object GuiBarterEvent : Listener {
                 ) { trade() }
             }
 
-            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
+            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
             }
         }

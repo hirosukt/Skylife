@@ -79,7 +79,7 @@ class Skylife : JavaPlugin(), Listener {
                 player.gameMode = GameMode.SURVIVAL
                 player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
                 player.teleport(Location(player.world, 0.0, 64.0, 0.0))
-                player.sendTitle(ChatColor.GOLD.toString() + "~= Welcome to Skylife =~", "")
+                player.sendTitle(ChatColor.GOLD.toString() + "~= Welcome to Skylife =~", "", 10, 70, 20)
             }
         }
     }
