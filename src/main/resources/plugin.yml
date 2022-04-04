@@ -9,10 +9,16 @@ commands:
   barter:
     aliases:
       - "ba"
+  gacha:
+    aliases:
+      - "ga"
 permissions:
   skylife.command.*:
     default: op
     children:
       skylife.command.barter: true
+      skylife.command.gacha: true
   skylife.command.barter:
     default: true
+  skylife.command.gacha:
+    default: op
