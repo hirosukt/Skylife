@@ -82,15 +82,26 @@ object GuiBarterEvent : Listener {
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
             } else if (slot % 9 >= 3) {
+
+                fun isTradable(trade: Material): Boolean {
+                    return ItemDataManager.tradable(clickedItem.type)?.contains(trade) ?: false
+                }
+
                 when (event.click) {
                     ClickType.RIGHT -> {
-                        // 最大1スタック取る処理
+                        for (i in 0..63) {
+                            for (i in 0..53) {
+                                if (i % 9 <= 1) {
+                                    val item = barterInv.getItem(i)
+                                    if (item == null || !isTradable(item.type)) continue
+                                    item.amount -= 1
+                                    playerInv.addItem(ItemUtil.create(clickedItem.type))
+                                    break
+                                }
+                            }
+                        }
                     }
                     ClickType.LEFT -> {
-                        // 左側からひとつ減らす処理
-                        fun isTradable(trade: Material): Boolean {
-                            return ItemDataManager.tradable(clickedItem.type)?.contains(trade) ?: false
-                        }
                         for (i in 0..53) {
                             if (i % 9 <= 1) {
                                 val item = barterInv.getItem(i)
