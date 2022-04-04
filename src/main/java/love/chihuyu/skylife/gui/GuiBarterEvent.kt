@@ -52,7 +52,8 @@ object GuiBarterEvent : Listener {
                 if (it % 9 > 2) {
                     try {
                         val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
-                        barterInv.setItem(it, ItemUtil.create(material, lore = listOf("左クリックで1個交換できます", "右クリックで1st交換できます")))
+                        barterInv.setItem(it,
+                            ItemUtil.create(material, lore = listOf("左クリックで1個交換できます", "右クリックで1st交換できます")))
                     } catch (e: IndexOutOfBoundsException) {
                         barterInv.setItem(it, GuiBarter.fillPanel)
                     }
