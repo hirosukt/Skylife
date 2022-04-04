@@ -10,6 +10,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryOpenEvent
 
 object GuiBarterEvent : Listener {
 
@@ -140,5 +141,14 @@ object GuiBarterEvent : Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    fun onOpen(event: InventoryOpenEvent) {
+        if (event.view.title != "Barter") return
+
+        val player = event.player as Player
+
+        player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_OPEN, 0.8f, 1f)
     }
 }
