@@ -6,7 +6,7 @@ import org.bukkit.Material
 
 object ItemDataManager {
 
-    private val data = mutableListOf(
+    private val tradableList = mutableListOf(
         mutableListOf(Material.DIRT, Material.GRASS_BLOCK, Material.SAND, Material.RED_SAND, Material.CLAY, Material.GRAVEL, Material.DIRT_PATH, Material.COARSE_DIRT, Material.ROOTED_DIRT, Material.WARPED_NYLIUM, Material.CRIMSON_NYLIUM),
         mutableListOf(Material.STONE, Material.COBBLESTONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE, Material.DEEPSLATE, Material.COBBLED_DEEPSLATE, Material.CALCITE, Material.TUFF, Material.DRIPSTONE_BLOCK),
         mutableListOf(Material.OAK_PLANKS, Material.ACACIA_PLANKS, Material.BIRCH_PLANKS, Material.DARK_OAK_PLANKS, Material.JUNGLE_PLANKS, Material.SPRUCE_PLANKS, Material.CRIMSON_PLANKS, Material.WARPED_PLANKS),
@@ -22,7 +22,7 @@ object ItemDataManager {
 
     fun checkDuplicate() {
         val dupItems = mutableListOf<Material>()
-        val flattenData = data.flatten()
+        val flattenData = tradableList.flatten()
 
         flattenData.forEach {
             if (flattenData.minus(it).contains(it)) {
@@ -34,6 +34,6 @@ object ItemDataManager {
         }
     }
 
-    fun tradable(material: Material) = data.find { it.contains(material) }
-    fun tradable(material: MutableList<Material>) = data.filter { it.any { item -> item in material } }
+    fun getTradableItems(material: Material) = tradableList.find { it.contains(material) }
+    fun getTradableItems(material: MutableList<Material>) = tradableList.filter { it.any { item -> item in material } }.flatten()
 }

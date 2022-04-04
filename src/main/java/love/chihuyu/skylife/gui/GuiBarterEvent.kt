@@ -1,6 +1,8 @@
 package love.chihuyu.skylife.gui
 
 import love.chihuyu.skylife.data.ItemDataManager
+import love.chihuyu.skylife.gui.constants.Areas
+import love.chihuyu.skylife.gui.constants.Panels
 import love.chihuyu.skylife.util.ItemUtil
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -11,8 +13,20 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
+import org.bukkit.inventory.ItemStack
 
 object GuiBarterEvent : Listener {
+
+    private fun dropItemAt(player: Player): (ItemStack) -> Unit = { item ->
+        player.world.dropItemNaturally(player.location, item)
+    }
+
+    private val tradableLore = listOf(
+        "左クリック -> 1個",
+        "右クリック -> 64個",
+        "シフト＋左 -> 16個",
+        "シフト＋右 -> 32個"
+    )
 
     val pageTemp = hashMapOf<Player, Int>()
 
@@ -27,43 +41,32 @@ object GuiBarterEvent : Listener {
         val playerInv = event.view.bottomInventory
         val barterInv = event.view.topInventory
 
-        val tradeItems = mutableListOf<Material>()
+        val tradingItems = mutableListOf<Material>()
         val tradableItems = mutableSetOf<Material>()
 
         fun loadTradeItemsFromInv() {
-            (0..53).forEach {
-                if (it % 9 <= 1) {
-                    val item = barterInv.getItem(it)
-                    if (item !== null) tradeItems.add(item.type)
-                }
-            }
+            val items = Areas.trading.mapNotNull(barterInv::getItem)
+            items.map { it.type }.forEach(tradingItems::add)
         }
 
         fun loadTradableItemsFromInv() {
-            ItemDataManager
-                .tradable(tradeItems)
-                .forEach { it.forEach { item -> tradableItems.add(item) } }
+            tradableItems.clear()
+            tradableItems.addAll(ItemDataManager.getTradableItems(tradingItems))
         }
 
         fun updateGui() {
             loadTradeItemsFromInv()
             loadTradableItemsFromInv()
-            val chunkedTradableItems = tradableItems.chunked(36)
-            var index = 0
-            (0..53).forEach {
-                if (it % 9 > 2) {
-                    try {
-                        val material = chunkedTradableItems[pageTemp[player] ?: 0][index++]
-                        barterInv.setItem(it,
-                            ItemUtil.create(material,
-                                lore = listOf("左クリック -> 1個",
-                                    "右クリック -> 64個",
-                                    "シフト+左 -> 16個",
-                                    "シフト+右 -> 32個")))
-                    } catch (e: IndexOutOfBoundsException) {
-                        barterInv.setItem(it, GuiBarter.fillPanel)
-                    }
-                }
+            val page = pageTemp[player] ?: 0
+            val chunkedTradableItems = tradableItems.chunked(36)[page]
+
+            for (i in Areas.tradable.indices) {
+                barterInv.setItem(
+                    i,
+                    if (i < chunkedTradableItems.size) {
+                        ItemUtil.create(chunkedTradableItems[page], lore = tradableLore)
+                    } else Panels.fill
+                )
             }
 
             player.updateInventory()
@@ -73,8 +76,6 @@ object GuiBarterEvent : Listener {
             val clone = clickedItem.clone()
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
-
-            updateGui()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
 
@@ -87,46 +88,39 @@ object GuiBarterEvent : Listener {
                 player.playSound(player.location, Sound.UI_BUTTON_CLICK, 0.8f, 1f)
             }
 
-            if (slot % 9 <= 1) {
+            if (slot in Areas.trading) {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
-                playerInv.addItem(clone).forEach { player.world.dropItemNaturally(player.location, it.value) }
-            } else if (slot % 9 >= 3) {
-
+                playerInv.addItem(clone).values.forEach(dropItemAt(player))
+            } else if (slot in Areas.tradable) {
                 fun isTradable(trade: Material): Boolean {
-                    return ItemDataManager.tradable(clickedItem.type)?.contains(trade) ?: false
+                    return ItemDataManager.getTradableItems(clickedItem.type)?.contains(trade) ?: false
                 }
 
                 fun trade() {
-                    for (i in 0..53) {
-                        if (i % 9 >= 2) continue
-
-                        val item = barterInv.getItem(i)
-                        if (item == null || !isTradable(item.type)) continue
-
-                        item.amount -= 1
-                        playerInv.addItem(ItemUtil.create(clickedItem.type))
-                        break
-                    }
+                    val item = Areas.trading.mapNotNull(barterInv::getItem).first { isTradable(it.type) }
+                    item.amount -= 1
+                    playerInv.addItem(ItemUtil.create(clickedItem.type))
                 }
 
                 if (isTradable(clickedItem.type)) player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
 
-                when (event.click) {
-                    ClickType.RIGHT -> repeat(64) { trade() }
-                    ClickType.SHIFT_RIGHT -> repeat(32) { trade() }
-                    ClickType.SHIFT_LEFT -> repeat(16) { trade() }
-                    ClickType.LEFT -> trade()
-                    else -> return
-                }
+                repeat(
+                    when (event.click) {
+                        ClickType.RIGHT -> 64
+                        ClickType.SHIFT_RIGHT -> 32
+                        ClickType.SHIFT_LEFT -> 16
+                        ClickType.LEFT -> 1
+                        else -> return
+                    }
+                ) { trade() }
             }
-            updateGui()
 
-            if (barterInv.getItem(3)?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
+            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
-                updateGui()
             }
         }
+        updateGui()
     }
 
     @EventHandler
@@ -139,14 +133,9 @@ object GuiBarterEvent : Listener {
 
         player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
 
-        (0..53).forEach {
-            if (it % 9 <= 1) {
-                val item = barterInv.getItem(it)
-                if (item !== null) playerInv.addItem(item).forEach { drop ->
-                    player.world.dropItemNaturally(player.location, drop.value)
-                }
-            }
-        }
+        val leftoverItems = Areas.trading.mapNotNull(barterInv::getItem)
+        val itemsToDrop = playerInv.addItem(*leftoverItems.toTypedArray())
+        itemsToDrop.values.forEach(dropItemAt(player))
     }
 
     @EventHandler
