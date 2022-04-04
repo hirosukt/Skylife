@@ -122,7 +122,7 @@ object GuiBarterEvent : Listener {
             }
             updateInventoryItems()
 
-            if (barterInv.getItem(3)?.itemMeta?.displayName == " " && pageTemp[player]!! > 0) {
+            if (barterInv.getItem(3)?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
                 updateInventoryItems()
             }
