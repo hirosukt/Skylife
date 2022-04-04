@@ -87,31 +87,21 @@ object GuiBarterEvent : Listener {
                     return ItemDataManager.tradable(clickedItem.type)?.contains(trade) ?: false
                 }
 
+                fun trade() {
+                    for (i in 0..53) {
+                        if (i % 9 <= 1) {
+                            val item = barterInv.getItem(i)
+                            if (item == null || !isTradable(item.type)) continue
+                            item.amount -= 1
+                            playerInv.addItem(ItemUtil.create(clickedItem.type))
+                            break
+                        }
+                    }
+                }
+
                 when (event.click) {
-                    ClickType.RIGHT -> {
-                        for (i in 0..63) {
-                            for (i in 0..53) {
-                                if (i % 9 <= 1) {
-                                    val item = barterInv.getItem(i)
-                                    if (item == null || !isTradable(item.type)) continue
-                                    item.amount -= 1
-                                    playerInv.addItem(ItemUtil.create(clickedItem.type))
-                                    break
-                                }
-                            }
-                        }
-                    }
-                    ClickType.LEFT -> {
-                        for (i in 0..53) {
-                            if (i % 9 <= 1) {
-                                val item = barterInv.getItem(i)
-                                if (item == null || !isTradable(item.type)) continue
-                                item.amount -= 1
-                                playerInv.addItem(ItemUtil.create(clickedItem.type))
-                                break
-                            }
-                        }
-                    }
+                    ClickType.RIGHT -> repeat(64) { trade() }
+                    ClickType.LEFT -> trade()
                     else -> return
                 }
             }
