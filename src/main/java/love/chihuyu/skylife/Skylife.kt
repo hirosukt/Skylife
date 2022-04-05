@@ -44,7 +44,7 @@ class Skylife : JavaPlugin(), Listener {
 
         ItemDataManager.checkDuplicate()
 
-        Database.connect("jdbc:sqlite:${plugin.dataFolder}\\userstats.db", driver = "org.sqlite.JDBC")
+        Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", driver = "org.sqlite.JDBC")
         transaction {
             SchemaUtils.create(User)
         }
