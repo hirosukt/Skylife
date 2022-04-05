@@ -4,6 +4,7 @@ import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.gui.constants.Areas
 import love.chihuyu.skylife.gui.constants.Panels
 import love.chihuyu.skylife.util.ItemUtil
+import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -13,13 +14,9 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 
 object GuiBarterEvent : Listener {
-
-    private fun dropItemAt(player: Player): (ItemStack) -> Unit = { item ->
-        player.world.dropItemNaturally(player.location, item)
-    }
 
     private val tradableLore = listOf(
         "左クリック -> 1個",
@@ -76,6 +73,7 @@ object GuiBarterEvent : Listener {
             val clone = clickedItem.clone()
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
+            updateGui()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
 
@@ -91,7 +89,7 @@ object GuiBarterEvent : Listener {
             if (slot in Areas.trading) {
                 val clone = clickedItem.clone()
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
-                playerInv.addItem(clone).values.forEach(dropItemAt(player))
+                player.inventory.addOrDropItem(clone)
             } else if (slot in Areas.tradable) {
                 fun isTradable(trade: Material): Boolean {
                     return ItemDataManager.getTradableItems(clickedItem.type)?.contains(trade) ?: false
@@ -115,27 +113,27 @@ object GuiBarterEvent : Listener {
                     }
                 ) { trade() }
             }
+            updateGui()
 
             if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
                 pageTemp[player] = pageTemp[player]?.dec() ?: 0
+                updateGui()
             }
         }
-        updateGui()
     }
 
     @EventHandler
     fun onClose(event: InventoryCloseEvent) {
         if (event.view.title != "Barter") return
 
-        val playerInv = event.view.bottomInventory
+        val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
         val player = event.player as Player
 
         player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
 
         val leftoverItems = Areas.trading.mapNotNull(barterInv::getItem)
-        val itemsToDrop = playerInv.addItem(*leftoverItems.toTypedArray())
-        itemsToDrop.values.forEach(dropItemAt(player))
+        playerInv.addOrDropItem(*leftoverItems.toTypedArray())
     }
 
     @EventHandler
