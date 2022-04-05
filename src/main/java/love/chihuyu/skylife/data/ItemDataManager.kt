@@ -6,7 +6,7 @@ import org.bukkit.Material
 
 object ItemDataManager {
 
-    private val data = mutableListOf(
+    private val tradableList = mutableListOf(
         /*石グループ*/mutableListOf(Material.COBBLESTONE, Material.STONE, Material.GRANITE, Material.ANDESITE, Material.DIORITE, Material.COBBLED_DEEPSLATE, Material.DEEPSLATE, Material.CALCITE, Material.TUFF, Material.DRIPSTONE_BLOCK),
         /*土グループ*/mutableListOf(Material.GRASS_BLOCK, Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT, Material.PODZOL, Material.MYCELIUM, Material.NETHERRACK, Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.SOUL_SAND, Material.SOUL_SOIL, Material.SAND, Material.RED_SAND, Material.GRAVEL, Material.CLAY),
         /*板グループ*/mutableListOf(Material.OAK_PLANKS, Material.ACACIA_PLANKS, Material.BIRCH_PLANKS, Material.DARK_OAK_PLANKS, Material.JUNGLE_PLANKS, Material.SPRUCE_PLANKS, Material.CRIMSON_PLANKS, Material.WARPED_PLANKS),
@@ -42,10 +42,9 @@ object ItemDataManager {
         /*種グループ*/mutableListOf(Material.WHEAT_SEEDS, Material.PUMPKIN_SEEDS, Material.MELON_SEEDS, Material.BEETROOT_SEEDS),
     )
 
-
     fun checkDuplicate() {
         val dupItems = mutableListOf<Material>()
-        val flattenData = data.flatten()
+        val flattenData = tradableList.flatten()
 
         flattenData.forEach {
             if (flattenData.minus(it).contains(it)) {
@@ -53,10 +52,10 @@ object ItemDataManager {
             }
         }
         if (dupItems.isNotEmpty()) {
-            plugin.logger.info(ChatColor.RED.toString() + "these items are duplicated. \n$dupItems")
+            plugin.logger.info("${ChatColor.RED}these items are duplicated. \n$dupItems")
         }
     }
 
-    fun tradable(material: Material) = data.find { it.contains(material) }
-    fun tradable(material: MutableList<Material>) = data.filter { it.any { item -> item in material } }
+    fun getTradableItems(material: Material) = tradableList.find { it.contains(material) }
+    fun getTradableItems(material: MutableList<Material>) = tradableList.filter { it.any { item -> item in material } }.flatten()
 }

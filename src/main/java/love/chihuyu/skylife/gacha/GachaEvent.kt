@@ -22,28 +22,33 @@ object GachaEvent : Listener {
 
             if (event.item?.itemMeta?.displayName?.contains("勤労感謝ガチャ") == true) {
                 // 確率が必要
-                player.world.dropItemNaturally(player.location, ItemUtil.create(listOf(
-                    Material.WOODEN_SHOVEL,
-                    Material.WOODEN_PICKAXE,
-                    Material.WOODEN_AXE,
-                    Material.WOODEN_HOE,
-                    Material.STONE_SHOVEL,
-                    Material.STONE_AXE,
-                    Material.STONE_HOE,
-                    Material.STONE_PICKAXE,
-                    Material.IRON_PICKAXE,
-                    Material.IRON_SHOVEL,
-                    Material.IRON_AXE,
-                    Material.IRON_HOE,
-                    Material.GOLDEN_PICKAXE,
-                    Material.GOLDEN_AXE,
-                    Material.GOLDEN_SHOVEL,
-                    Material.GOLDEN_HOE,
-                    Material.DIAMOND_AXE,
-                    Material.DIAMOND_HOE,
-                    Material.DIAMOND_PICKAXE,
-                    Material.DIAMOND_SHOVEL
-                ).random()))
+                player.world.dropItemNaturally(
+                    player.location,
+                    ItemUtil.create(
+                        listOf(
+                            Material.WOODEN_SHOVEL,
+                            Material.WOODEN_PICKAXE,
+                            Material.WOODEN_AXE,
+                            Material.WOODEN_HOE,
+                            Material.STONE_SHOVEL,
+                            Material.STONE_AXE,
+                            Material.STONE_HOE,
+                            Material.STONE_PICKAXE,
+                            Material.IRON_PICKAXE,
+                            Material.IRON_SHOVEL,
+                            Material.IRON_AXE,
+                            Material.IRON_HOE,
+                            Material.GOLDEN_PICKAXE,
+                            Material.GOLDEN_AXE,
+                            Material.GOLDEN_SHOVEL,
+                            Material.GOLDEN_HOE,
+                            Material.DIAMOND_AXE,
+                            Material.DIAMOND_HOE,
+                            Material.DIAMOND_PICKAXE,
+                            Material.DIAMOND_SHOVEL
+                        ).random()
+                    )
+                )
                 player.playSound(player.location, Sound.ENTITY_PLAYER_BURP, 0.8f, 1f)
                 clickedItem?.amount = clickedItem?.amount?.dec() ?: 0
             }
