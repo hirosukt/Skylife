@@ -57,9 +57,9 @@ object GuiBarterEvent : Listener {
             val page = pageTemp[player] ?: 0
             val chunkedTradableItems = tradableItems.chunked(36)[page]
 
-            for (i in Areas.tradable.indices) {
+            for ((i, slot) in Areas.tradable.withIndex()) {
                 barterInv.setItem(
-                    i,
+                    slot,
                     if (i < chunkedTradableItems.size) {
                         ItemUtil.create(chunkedTradableItems[page], lore = tradableLore)
                     } else Panels.fill
