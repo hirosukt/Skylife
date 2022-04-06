@@ -10,7 +10,7 @@ object GachaData {
         Pair(this.KosekiGacha, "KosekiGacha")
     )
 
-    val KinroKanshaGacha = GachaDataRecord(
+    val KinroKanshaGacha = GachaRecord(
         Material.DRAGON_HEAD,
         "${ChatColor.AQUA}-=+ 勤労感謝ガチャ +=-",
         listOf(
@@ -57,7 +57,7 @@ object GachaData {
         Pair(Material.NETHERITE_AXE, 1),
     )
 
-    val KosekiGacha = GachaDataRecord(
+    private val KosekiGacha = GachaRecord(
         Material.DRAGON_HEAD,
         "${ChatColor.BLUE}-=+ 鉱石ガチャ +=-",
         listOf(
@@ -66,20 +66,23 @@ object GachaData {
             "右クリックでランダムが鉱石が出てくるよ！"
         ),
         5020,
-
-        // 外れ10％
-        Pair(Material.COAL_ORE, 5),
-        Pair(Material.COPPER_ORE, 5),
-        // 鉄50％
-        Pair(Material.IRON_ORE, 50),
-        // その他40％
-        Pair(Material.GOLD_ORE, 9),
-        Pair(Material.LAPIS_ORE, 8),
-        Pair(Material.REDSTONE_ORE, 7),
-        Pair(Material.EMERALD_ORE, 7),
-        Pair(Material.DIAMOND_ORE, 3),
-        Pair(Material.ANCIENT_DEBRIS, 1),
-        Pair(Material.AMETHYST_SHARD, 5)
+        13,
+        Material.IRON_INGOT to 1,
+        mapOf(
+            // 外れ10％
+            Material.COAL_ORE to 5,
+            Material.COPPER_ORE to 5,
+            // 鉄50％
+            Material.IRON_ORE to 50,
+            // その他40％
+            Material.GOLD_ORE to 9,
+            Material.LAPIS_ORE to 8,
+            Material.REDSTONE_ORE to 7,
+            Material.EMERALD_ORE to 7,
+            Material.DIAMOND_ORE to 3,
+            Material.ANCIENT_DEBRIS to 1,
+            Material.AMETHYST_SHARD to 5,
+        )
     )
 
     val pairString = enabled().associate { Pair(it.second, it.first) }
