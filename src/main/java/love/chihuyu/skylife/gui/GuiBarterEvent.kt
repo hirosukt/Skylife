@@ -35,7 +35,7 @@ object GuiBarterEvent : Listener {
         val clickedItem = event.currentItem ?: return
         val player = event.whoClicked as Player
         val clickedInvType = event.clickedInventory?.type
-        val playerInv = event.view.bottomInventory
+        val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
 
         val tradingItems = mutableListOf<Material>()
@@ -101,15 +101,15 @@ object GuiBarterEvent : Listener {
                     playerInv.addItem(ItemUtil.create(clickedItem.type))
                 }
 
-                val maxAmount = when (event.click) {
-                    ClickType.LEFT -> 1
+                val amount = when (event.click) {
                     ClickType.SHIFT_LEFT -> 64
-                    ClickType.RIGHT -> 32
                     ClickType.SHIFT_RIGHT -> 16
-                    else -> return
-                }
-                val repeatCount = if (clickedItem.amount > maxAmount) maxAmount else clickedItem.amount
-                repeat(repeatCount) { trade() }
+                    ClickType.LEFT -> 1
+                    ClickType.RIGHT -> 32
+                    else -> 0
+                }.coerceAtMost(max)
+
+                trade(amount)
                 player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateGui()
