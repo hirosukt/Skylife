@@ -9,6 +9,7 @@ commands:
   barter:
     aliases:
       - "ba"
+      - "trade"
   gacha:
     aliases:
       - "ga"
