@@ -5,6 +5,7 @@ import love.chihuyu.skylife.gui.constants.Areas
 import love.chihuyu.skylife.gui.constants.Panels
 import love.chihuyu.skylife.util.ItemUtil
 import love.chihuyu.skylife.util.addOrDropItem
+import love.chihuyu.skylife.util.removeAsPossible
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -124,11 +125,10 @@ object GuiBarterEvent : Listener {
         val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
         val player = event.player as Player
-
-        player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
-
         val leftoverItems = Areas.trading.mapNotNull(barterInv::getItem)
+
         playerInv.addOrDropItem(*leftoverItems.toTypedArray())
+        player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
     }
 
     @EventHandler
