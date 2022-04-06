@@ -48,7 +48,7 @@ object GuiBarterEvent : Listener {
 
         fun loadTradableItemsFromInv() {
             tradableItems.clear()
-            tradableItems.addAll(ItemDataManager.getTradableItems(tradingItems))
+            tradableItems.addAll(ItemDataManager.getTradableItems(*tradingItems.toTypedArray()))
         }
 
         fun updateGui() {
@@ -92,7 +92,7 @@ object GuiBarterEvent : Listener {
                 player.inventory.addOrDropItem(clone)
             } else if (slot in Areas.tradable) {
                 fun isTradable(trade: Material): Boolean {
-                    return ItemDataManager.getTradableItems(clickedItem.type)?.contains(trade) ?: false
+                    return ItemDataManager.getTradableItems(clickedItem.type).contains(trade)
                 }
 
                 fun trade() {

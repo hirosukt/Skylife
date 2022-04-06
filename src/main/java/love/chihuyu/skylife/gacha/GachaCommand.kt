@@ -6,6 +6,7 @@ import love.chihuyu.skylife.data.GachaDataRecord
 import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import kotlin.reflect.full.memberProperties
 
 object GachaCommand : Command("gacha") {
 

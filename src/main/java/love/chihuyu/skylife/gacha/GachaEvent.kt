@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerItemBreakEvent
 
 object GachaEvent : Listener {
 
+    private val gachaData = GachaData.KinroKanshaGacha
+
     @EventHandler
     fun onToolBroken(event: PlayerItemBreakEvent) {
         event.player.inventory.addOrDropItem(gachaData.getGachaItem())
