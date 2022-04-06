@@ -38,24 +38,12 @@ object GuiBarterEvent : Listener {
         val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
 
-        val tradingItems = mutableListOf<Material>()
-        val tradableItems = mutableSetOf<Material>()
-
-        fun loadTradeItemsFromInv() {
-            val items = Areas.trading.mapNotNull(barterInv::getItem)
-            items.map { it.type }.forEach(tradingItems::add)
-        }
-
-        fun loadTradableItemsFromInv() {
-            tradableItems.clear()
-            tradableItems.addAll(ItemDataManager.getTradableItems(*tradingItems.toTypedArray()))
-        }
-
         fun updateGui() {
-            loadTradeItemsFromInv()
-            loadTradableItemsFromInv()
+            val tradingItems = Areas.trading.mapNotNull(barterInv::getItem).map { it.type }
+            val tradableItems = ItemDataManager.getTradableItems(*tradingItems.toTypedArray()).toList()
+
             val page = pageTemp[player] ?: 0
-            val chunkedTradableItems = tradableItems.chunked(36)[page]
+            val chunkedTradableItems = tradableItems.chunked(36).getOrNull(page) ?: listOf()
 
             for ((i, slot) in Areas.tradable.withIndex()) {
                 barterInv.setItem(
@@ -91,14 +79,21 @@ object GuiBarterEvent : Listener {
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 player.inventory.addOrDropItem(clone)
             } else if (slot in Areas.tradable) {
-                fun isTradable(trade: Material): Boolean {
-                    return ItemDataManager.getTradableItems(clickedItem.type).contains(trade)
-                }
+                if (!ItemDataManager.isTradable(clickedItem.type)) return
 
-                fun trade() {
-                    val item = Areas.trading.mapNotNull(barterInv::getItem).first { isTradable(it.type) }
-                    item.amount -= 1
-                    playerInv.addItem(ItemUtil.create(clickedItem.type))
+                val tradableItems = ItemDataManager.getTradableItems(clickedItem.type)
+                val items = Areas.trading.mapNotNull(barterInv::getItem).filter { tradableItems.contains(it.type) }
+                val max = items.sumOf { it.amount }
+
+                fun trade(amount: Int) {
+                    var sum = amount
+                    for (item in items) {
+                        val tmp = item.amount
+                        item.amount = if (tmp < sum) 0 else tmp.minus(sum)
+                        sum -= tmp
+                        if (sum <= 0) break
+                    }
+                    playerInv.addOrDropItem(ItemUtil.create(clickedItem.type, count = amount))
                 }
 
                 val amount = when (event.click) {
@@ -115,7 +110,8 @@ object GuiBarterEvent : Listener {
             updateGui()
 
             if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
-                pageTemp[player] = pageTemp[player]?.dec() ?: 0
+                // とりあえず０
+                pageTemp[player] = 0
                 updateGui()
             }
         }
