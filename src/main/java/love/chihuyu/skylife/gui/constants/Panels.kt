@@ -8,6 +8,6 @@ import org.bukkit.Material
 object Panels {
     val fill         = ItemUtil.create(Material.LIGHT_GRAY_STAINED_GLASS_PANE, " ")
     val separator    = ItemUtil.create(Material.     WHITE_STAINED_GLASS_PANE, " ")
-    val nextPage     = ItemUtil.create(Material.      LIME_STAINED_GLASS_PANE, ChatColor.GREEN.toString() + "Next Page")
-    val previousPage = ItemUtil.create(Material.       RED_STAINED_GLASS_PANE, ChatColor.RED.toString() + "Previous Page")
+    val nextPage     = ItemUtil.create(Material.      LIME_STAINED_GLASS_PANE, "${ChatColor.GREEN}Next Page")
+    val previousPage = ItemUtil.create(Material.       RED_STAINED_GLASS_PANE, "${ChatColor.RED}Previous Page")
 }
