@@ -20,9 +20,9 @@ object GuiBarterEvent : Listener {
 
     private val tradableLore = listOf(
         "左クリック ->  1個",
-        "右クリック -> 64個",
-        "シフト＋左 -> 16個",
-        "シフト＋右 -> 32個"
+        "シフト＋左 -> 64個",
+        "右クリック -> 32個",
+        "シフト＋右 -> 16個"
     )
 
     val pageTemp = hashMapOf<Player, Int>()
@@ -35,33 +35,21 @@ object GuiBarterEvent : Listener {
         val clickedItem = event.currentItem ?: return
         val player = event.whoClicked as Player
         val clickedInvType = event.clickedInventory?.type
-        val playerInv = event.view.bottomInventory
+        val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
 
-        val tradingItems = mutableListOf<Material>()
-        val tradableItems = mutableSetOf<Material>()
-
-        fun loadTradeItemsFromInv() {
-            val items = Areas.trading.mapNotNull(barterInv::getItem)
-            items.map { it.type }.forEach(tradingItems::add)
-        }
-
-        fun loadTradableItemsFromInv() {
-            tradableItems.clear()
-            tradableItems.addAll(ItemDataManager.getTradableItems(*tradingItems.toTypedArray()))
-        }
-
         fun updateGui() {
-            loadTradeItemsFromInv()
-            loadTradableItemsFromInv()
+            val tradingItems = Areas.trading.mapNotNull(barterInv::getItem).map { it.type }
+            val tradableItems = ItemDataManager.getTradableItems(*tradingItems.toTypedArray()).toList()
+
             val page = pageTemp[player] ?: 0
-            val chunkedTradableItems = tradableItems.chunked(36)[page]
+            val chunkedTradableItems = tradableItems.chunked(36).getOrNull(page) ?: listOf()
 
             for ((i, slot) in Areas.tradable.withIndex()) {
                 barterInv.setItem(
                     slot,
                     if (i < chunkedTradableItems.size) {
-                        ItemUtil.create(chunkedTradableItems[page], lore = tradableLore)
+                        ItemUtil.create(chunkedTradableItems[i], lore = tradableLore)
                     } else Panels.fill
                 )
             }
@@ -91,32 +79,39 @@ object GuiBarterEvent : Listener {
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 player.inventory.addOrDropItem(clone)
             } else if (slot in Areas.tradable) {
-                fun isTradable(trade: Material): Boolean {
-                    return ItemDataManager.getTradableItems(clickedItem.type).contains(trade)
-                }
+                if (!ItemDataManager.isTradable(clickedItem.type)) return
 
-                fun trade() {
-                    val item = Areas.trading.mapNotNull(barterInv::getItem).first { isTradable(it.type) }
-                    item.amount -= 1
-                    playerInv.addItem(ItemUtil.create(clickedItem.type))
-                }
+                val tradableItems = ItemDataManager.getTradableItems(clickedItem.type)
+                val items = Areas.trading.mapNotNull(barterInv::getItem).filter { tradableItems.contains(it.type) }
+                val max = items.sumOf { it.amount }
 
-                if (isTradable(clickedItem.type)) player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
-
-                repeat(
-                    when (event.click) {
-                        ClickType.RIGHT -> 64
-                        ClickType.SHIFT_RIGHT -> 32
-                        ClickType.SHIFT_LEFT -> 16
-                        ClickType.LEFT -> 1
-                        else -> return
+                fun trade(amount: Int) {
+                    var sum = amount
+                    for (item in items) {
+                        val tmp = item.amount
+                        item.amount = if (tmp < sum) 0 else tmp.minus(sum)
+                        sum -= tmp
+                        if (sum <= 0) break
                     }
-                ) { trade() }
+                    playerInv.addOrDropItem(ItemUtil.create(clickedItem.type, count = amount))
+                }
+
+                val amount = when (event.click) {
+                    ClickType.SHIFT_LEFT -> 64
+                    ClickType.SHIFT_RIGHT -> 16
+                    ClickType.LEFT -> 1
+                    ClickType.RIGHT -> 32
+                    else -> 0
+                }.coerceAtMost(max)
+
+                trade(amount)
+                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateGui()
 
             if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
-                pageTemp[player] = pageTemp[player]?.dec() ?: 0
+                // とりあえず０
+                pageTemp[player] = 0
                 updateGui()
             }
         }
