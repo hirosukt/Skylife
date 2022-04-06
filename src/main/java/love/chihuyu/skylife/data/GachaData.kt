@@ -67,33 +67,19 @@ object GachaData {
         ),
         5020,
 
-        Pair(Material.COAL_ORE, 10),
-        Pair(Material.DEEPSLATE_COAL_ORE, 10),
-
-        Pair(Material.COPPER_ORE, 8),
-        Pair(Material.DEEPSLATE_COPPER_ORE, 8),
-
-        Pair(Material.IRON_ORE, 7),
-        Pair(Material.DEEPSLATE_IRON_ORE, 7),
-
-        Pair(Material.GOLD_ORE, 5),
-        Pair(Material.DEEPSLATE_GOLD_ORE, 5),
-
-        Pair(Material.LAPIS_ORE, 6),
-        Pair(Material.DEEPSLATE_LAPIS_ORE, 6),
-
-        Pair(Material.REDSTONE_ORE, 6),
-        Pair(Material.DEEPSLATE_REDSTONE_ORE, 6),
-
-        Pair(Material.EMERALD_ORE, 6),
-        Pair(Material.DEEPSLATE_EMERALD_ORE, 6),
-
+        // 外れ10％
+        Pair(Material.COAL_ORE, 5),
+        Pair(Material.COPPER_ORE, 5),
+        // 鉄50％
+        Pair(Material.IRON_ORE, 50),
+        // その他40％
+        Pair(Material.GOLD_ORE, 9),
+        Pair(Material.LAPIS_ORE, 8),
+        Pair(Material.REDSTONE_ORE, 7),
+        Pair(Material.EMERALD_ORE, 7),
         Pair(Material.DIAMOND_ORE, 3),
-        Pair(Material.DEEPSLATE_DIAMOND_ORE, 3),
-
         Pair(Material.ANCIENT_DEBRIS, 1),
-        Pair(Material.NETHERITE_SCRAP, 1),
-        Pair(Material.AMETHYST_SHARD, 1)
+        Pair(Material.AMETHYST_SHARD, 5)
     )
 
     val pairString = enabled().associate { Pair(it.second, it.first) }
