@@ -19,7 +19,7 @@ import org.bukkit.inventory.PlayerInventory
 object GuiBarterEvent : Listener {
 
     private val tradableLore = listOf(
-        "左クリック -> 1個",
+        "左クリック ->  1個",
         "右クリック -> 64個",
         "シフト＋左 -> 16個",
         "シフト＋右 -> 32個"

@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object GachaCommand : Command("gacha") {
+
+    // そのうち when だろうけどネストが深くなりすぎるので他の方法を考えたい by てんじゅ
     override fun onCommand(sender: CommandSender, label: String, args: Array<out String>) {
         if (!(sender is Player && sender.hasPermission("skylife.command.gacha") && args.size <= 4)) return
         if (args[0] != "勤労感謝ガチャ") return
