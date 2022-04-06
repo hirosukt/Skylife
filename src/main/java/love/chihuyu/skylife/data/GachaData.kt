@@ -2,31 +2,22 @@ package love.chihuyu.skylife.data
 
 import org.bukkit.ChatColor
 import org.bukkit.Material
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.valueParameters
-
-//val GachaData = mapOf(
-//    "KinroKanshaGacha" to GachaDataRecord(
 
 object GachaData {
-
-    fun getGachaByName (name: String): GachaDataRecord? {
-        val taiou = hashMapOf(
-            Pair("KinroKanshaGacha", KinroKanshaGacha)
-        )
-        val naaameeee = GachaData::class.declaredMemberProperties.map { it.name }
-
-    }
+    private fun enabled() = listOf(
+     // Pair(GachaDataRecord, コマンドで受け取る文字列)
+        Pair(this.KinroKanshaGacha, "KinroKanshaGacha")
+    )
 
     val KinroKanshaGacha = GachaDataRecord(
         Material.DRAGON_HEAD,
-        "${ChatColor.AQUA}~=+ 勤労感謝ガチャ +=~",
+        "${ChatColor.AQUA}-=+ 勤労感謝ガチャ +=-",
         listOf(
             "いつも働いてくれてありがとう！",
             "",
             "右クリックでランダムなツールが出てくるよ！"
         ),
+        5010,
 
         Pair(Material.WOODEN_SWORD, 3),
         Pair(Material.WOODEN_SHOVEL, 3),
@@ -34,11 +25,11 @@ object GachaData {
         Pair(Material.WOODEN_HOE, 3),
         Pair(Material.WOODEN_AXE, 3),
 
-        Pair(Material.STONE_SWORD, 8),
-        Pair(Material.STONE_SHOVEL, 8),
-        Pair(Material.STONE_PICKAXE, 8),
-        Pair(Material.STONE_HOE, 8),
-        Pair(Material.STONE_AXE, 8),
+        Pair(Material.STONE_SWORD, 10),
+        Pair(Material.STONE_SHOVEL, 10),
+        Pair(Material.STONE_PICKAXE, 10),
+        Pair(Material.STONE_HOE, 10),
+        Pair(Material.STONE_AXE, 10),
 
         Pair(Material.IRON_SWORD, 15),
         Pair(Material.IRON_SHOVEL, 15),
@@ -64,4 +55,7 @@ object GachaData {
         Pair(Material.NETHERITE_HOE, 1),
         Pair(Material.NETHERITE_AXE, 1),
     )
+
+    val pairString = enabled().associate { Pair(it.second, it.first) }
+    val pairCustomModelData = enabled().associate { Pair(it.first.customModelData, it.first) }
 }

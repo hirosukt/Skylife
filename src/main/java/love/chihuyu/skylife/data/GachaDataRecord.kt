@@ -8,11 +8,12 @@ class GachaDataRecord(
     private val material: Material,
     private val name: String,
     private val lore: List<String>,
+    val customModelData: Int,
     private vararg val chanceMap: Pair<Material, Int>,
 ) {
     private val size = chanceMap.sumOf { it.second }
 
-    fun getGachaItem(amount: Int = 1): ItemStack = ItemUtil.create(material, name, amount, true, lore, 5)
+    fun getGachaItem(amount: Int = 1): ItemStack = ItemUtil.create(material, name, amount, true, lore, customModelData)
 
     fun chooseMaterial(): Material {
         val rand = (0 until size).random()
