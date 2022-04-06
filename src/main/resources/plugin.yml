@@ -13,6 +13,9 @@ commands:
   gacha:
     aliases:
       - "ga"
+  gachagive:
+    aliases:
+      - "gag"
 permissions:
   skylife.command.*:
     default: op
@@ -22,4 +25,6 @@ permissions:
   skylife.command.barter:
     default: true
   skylife.command.gacha:
+    default: true
+  skylife.command.gachagive:
     default: op

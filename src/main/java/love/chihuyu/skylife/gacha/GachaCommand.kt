@@ -6,9 +6,9 @@ import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object GachaCommand : Command("gacha") {
+object GachaCommand : Command("gachagive") {
     override fun onCommand(sender: CommandSender, label: String, args: Array<out String>) {
-        if (!(sender is Player && sender.hasPermission("skylife.command.gacha"))) return
+        if (!(sender is Player && sender.hasPermission("skylife.command.gachagive"))) return
 
         val target = sender.server.onlinePlayers.find { it.displayName == args[0] } ?: return
         val gacha = GachaData.pairString[args[1]] ?: return
