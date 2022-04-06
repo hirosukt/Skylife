@@ -4,6 +4,8 @@ import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gacha.GachaCommand
 import love.chihuyu.skylife.gacha.GachaEvent
+import love.chihuyu.skylife.gacha.GachaShopCommand
+import love.chihuyu.skylife.gacha.GachaShopEvent
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
 import net.md_5.bungee.api.ChatColor
@@ -40,7 +42,7 @@ class Skylife : JavaPlugin(), Listener {
         config.options().copyDefaults(true)
         saveResource("config.yml", false)
 
-        listOf(GuiBarterCommand, GachaCommand).forEach { it.register() }
+        listOf(GuiBarterCommand, GachaCommand, GachaShopCommand).forEach { it.register() }
 
         ItemDataManager.checkDuplicate()
 
@@ -49,7 +51,7 @@ class Skylife : JavaPlugin(), Listener {
             SchemaUtils.create(User)
         }
 
-        listOf(this, GuiBarterEvent, GachaEvent).forEach { server.pluginManager.registerEvents(it, this) }
+        listOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent).forEach { server.pluginManager.registerEvents(it, this) }
     }
 
     override fun onDisable() {
