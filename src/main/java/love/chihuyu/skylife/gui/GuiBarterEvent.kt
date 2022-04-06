@@ -20,9 +20,9 @@ object GuiBarterEvent : Listener {
 
     private val tradableLore = listOf(
         "左クリック ->  1個",
-        "右クリック -> 64個",
-        "シフト＋左 -> 16個",
-        "シフト＋右 -> 32個"
+        "シフト＋左 -> 64個",
+        "右クリック -> 32個",
+        "シフト＋右 -> 16個"
     )
 
     val pageTemp = hashMapOf<Player, Int>()
@@ -61,7 +61,7 @@ object GuiBarterEvent : Listener {
                 barterInv.setItem(
                     slot,
                     if (i < chunkedTradableItems.size) {
-                        ItemUtil.create(chunkedTradableItems[page], lore = tradableLore)
+                        ItemUtil.create(chunkedTradableItems[i], lore = tradableLore)
                     } else Panels.fill
                 )
             }
@@ -101,17 +101,16 @@ object GuiBarterEvent : Listener {
                     playerInv.addItem(ItemUtil.create(clickedItem.type))
                 }
 
-                if (isTradable(clickedItem.type)) player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
-
-                repeat(
-                    when (event.click) {
-                        ClickType.RIGHT -> 64
-                        ClickType.SHIFT_RIGHT -> 32
-                        ClickType.SHIFT_LEFT -> 16
-                        ClickType.LEFT -> 1
-                        else -> return
-                    }
-                ) { trade() }
+                val maxAmount = when (event.click) {
+                    ClickType.LEFT -> 1
+                    ClickType.SHIFT_LEFT -> 64
+                    ClickType.RIGHT -> 32
+                    ClickType.SHIFT_RIGHT -> 16
+                    else -> return
+                }
+                val repeatCount = if (clickedItem.amount > maxAmount) maxAmount else clickedItem.amount
+                repeat(repeatCount) { trade() }
+                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateGui()
 
