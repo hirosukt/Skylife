@@ -14,7 +14,7 @@ object GachaCommand : Command("gachagive") {
         val gacha = GachaData.pairString[args[1]] ?: return
         val amount = try { args[2].toIntOrNull() ?: 1 } catch (e: IndexOutOfBoundsException) { 1 }
 
-        target.inventory.addOrDropItem(gacha.getGachaItem(amount))
+        target.inventory.addOrDropItem(gacha.getItem(amount))
     }
 
     override fun onTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String> {

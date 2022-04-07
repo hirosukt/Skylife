@@ -81,21 +81,7 @@ object GuiBarterEvent : Listener {
                 player.inventory.addOrDropItem(clone)
             } else if (slot in Areas.tradable) {
                 if (!ItemDataManager.isTradable(clickedItem.type)) return
-
-                val tradableItems = ItemDataManager.getTradableItems(clickedItem.type)
-                val items = Areas.trading.mapNotNull(barterInv::getItem).filter { tradableItems.contains(it.type) }
-                val max = items.sumOf { it.amount }
-
-                fun trade(amount: Int) {
-                    var sum = amount
-                    for (item in items) {
-                        val tmp = item.amount
-                        item.amount = if (tmp < sum) 0 else tmp.minus(sum)
-                        sum -= tmp
-                        if (sum <= 0) break
-                    }
-                    playerInv.addOrDropItem(ItemUtil.create(clickedItem.type, count = amount))
-                }
+                val fuckingFuck = ItemDataManager.getTradableItems(clickedItem.type)
 
                 val amount = when (event.click) {
                     ClickType.SHIFT_LEFT -> 64
@@ -103,9 +89,12 @@ object GuiBarterEvent : Listener {
                     ClickType.LEFT -> 1
                     ClickType.RIGHT -> 32
                     else -> 0
-                }.coerceAtMost(max)
+                }
+                val removedCount = barterInv.removeAsPossible(amount) { position, item ->
+                    position in Areas.trading && fuckingFuck.contains(item.type)
+                }
 
-                trade(amount)
+                playerInv.addOrDropItem(ItemUtil.create(clickedItem.type, count = removedCount))
                 player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
             updateGui()

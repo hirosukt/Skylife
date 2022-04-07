@@ -5,9 +5,9 @@ import org.bukkit.Material
 
 object GachaData {
     private fun enabled() = listOf(
-     // Pair(GachaDataRecord, コマンドで受け取る文字列)
-        Pair(this.KinroKanshaGacha, "KinroKanshaGacha"),
-        Pair(this.KosekiGacha, "KosekiGacha")
+        // Pair(GachaDataRecord, コマンドで受け取る文字列)
+        KinroKanshaGacha to "KinroKanshaGacha",
+        KosekiGacha to "KosekiGacha"
     )
 
     val KinroKanshaGacha = GachaRecord(
@@ -19,42 +19,45 @@ object GachaData {
             "右クリックでランダムなツールが出てくるよ！"
         ),
         5010,
+        null,
+        null,
+        mapOf(
+            Material.WOODEN_SWORD to 3,
+            Material.WOODEN_SHOVEL to 3,
+            Material.WOODEN_PICKAXE to 3,
+            Material.WOODEN_HOE to 3,
+            Material.WOODEN_AXE to 3,
 
-        Pair(Material.WOODEN_SWORD, 3),
-        Pair(Material.WOODEN_SHOVEL, 3),
-        Pair(Material.WOODEN_PICKAXE, 3),
-        Pair(Material.WOODEN_HOE, 3),
-        Pair(Material.WOODEN_AXE, 3),
+            Material.STONE_SWORD to 10,
+            Material.STONE_SHOVEL to 10,
+            Material.STONE_PICKAXE to 10,
+            Material.STONE_HOE to 10,
+            Material.STONE_AXE to 10,
 
-        Pair(Material.STONE_SWORD, 10),
-        Pair(Material.STONE_SHOVEL, 10),
-        Pair(Material.STONE_PICKAXE, 10),
-        Pair(Material.STONE_HOE, 10),
-        Pair(Material.STONE_AXE, 10),
+            Material.IRON_SWORD to 15,
+            Material.IRON_SHOVEL to 15,
+            Material.IRON_PICKAXE to 15,
+            Material.IRON_HOE to 15,
+            Material.IRON_AXE to 15,
 
-        Pair(Material.IRON_SWORD, 15),
-        Pair(Material.IRON_SHOVEL, 15),
-        Pair(Material.IRON_PICKAXE, 15),
-        Pair(Material.IRON_HOE, 15),
-        Pair(Material.IRON_AXE, 15),
+            Material.GOLDEN_SWORD to 10,
+            Material.GOLDEN_SHOVEL to 10,
+            Material.GOLDEN_PICKAXE to 10,
+            Material.GOLDEN_HOE to 10,
+            Material.GOLDEN_AXE to 10,
 
-        Pair(Material.GOLDEN_SWORD, 10),
-        Pair(Material.GOLDEN_SHOVEL, 10),
-        Pair(Material.GOLDEN_PICKAXE, 10),
-        Pair(Material.GOLDEN_HOE, 10),
-        Pair(Material.GOLDEN_AXE, 10),
+            Material.DIAMOND_SWORD to 5,
+            Material.DIAMOND_SHOVEL to 5,
+            Material.DIAMOND_PICKAXE to 5,
+            Material.DIAMOND_HOE to 5,
+            Material.DIAMOND_AXE to 5,
 
-        Pair(Material.DIAMOND_SWORD, 5),
-        Pair(Material.DIAMOND_SHOVEL, 5),
-        Pair(Material.DIAMOND_PICKAXE, 5),
-        Pair(Material.DIAMOND_HOE, 5),
-        Pair(Material.DIAMOND_AXE, 5),
-
-        Pair(Material.NETHERITE_SWORD, 1),
-        Pair(Material.NETHERITE_SHOVEL, 1),
-        Pair(Material.NETHERITE_PICKAXE, 1),
-        Pair(Material.NETHERITE_HOE, 1),
-        Pair(Material.NETHERITE_AXE, 1),
+            Material.NETHERITE_SWORD to 1,
+            Material.NETHERITE_SHOVEL to 1,
+            Material.NETHERITE_PICKAXE to 1,
+            Material.NETHERITE_HOE to 1,
+            Material.NETHERITE_AXE to 1,
+        )
     )
 
     private val KosekiGacha = GachaRecord(
@@ -85,6 +88,9 @@ object GachaData {
         )
     )
 
-    val pairString = enabled().associate { Pair(it.second, it.first) }
-    val pairCustomModelData = enabled().associate { Pair(it.first.customModelData, it.first) }
+    val pairString = enabled().associate { it.second to it.first }
+    val pairCustomModelData = enabled().associate { it.first.customModelData to it.first }
+    val buyables = enabled()
+        .filter { (gacha) -> gacha.shopData?.customModelData is Int }
+        .associate { (gacha) -> gacha.shopData!!.customModelData to gacha }
 }
