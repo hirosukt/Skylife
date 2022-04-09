@@ -62,11 +62,11 @@ object GachaData {
 
     private val KosekiGacha = GachaRecord(
         Material.DRAGON_HEAD,
-        "${ChatColor.BLUE}-=+ 鉱石ガチャ +=-",
+        "${ChatColor.BLUE}>=+ 鉱石ガチャ +=<",
         listOf(
             "お疲れ様！",
             "",
-            "右クリックでランダムが鉱石が出てくるよ！"
+            "右クリックでランダムな鉱石が出てくるよ！"
         ),
         5020,
         13,
@@ -85,6 +85,58 @@ object GachaData {
             Material.DIAMOND_ORE to 3,
             Material.ANCIENT_DEBRIS to 1,
             Material.AMETHYST_SHARD to 5,
+        )
+    )
+
+    private val SyokuryoGacha = GachaRecord(
+        Material.DRAGON_HEAD,
+        "${ChatColor.GOLD}={+ 食料ガチャ +}=",
+        listOf(
+            "ご馳走の匂いがする...",
+            "",
+            "右クリックでランダムな食料が出てくるよ！"
+        ),
+        5030,
+        null,
+        null,
+        mapOf(
+            // ハズレ
+            Material.PUFFERFISH to 2,
+            Material.ROTTEN_FLESH to 2,
+            Material.POISONOUS_POTATO to 2,
+            // 生肉
+            Material.PORKCHOP to 2,
+            Material.MUTTON to 2,
+            Material.RABBIT to 2,
+            Material.BEEF to 2,
+            Material.CHICKEN to 2,
+            Material.RABBIT_STEW to 2,
+            // 果物
+            Material.APPLE to 6,
+            Material.GOLDEN_APPLE to 2,
+            Material.ENCHANTED_GOLDEN_APPLE to 1,
+            Material.MELON_SLICE to 6,
+            Material.SWEET_BERRIES to 6,
+            Material.GLOW_BERRIES to 6,
+            // 菓子
+            Material.CAKE to 4,
+            Material.COOKIE to 4,
+            Material.PUMPKIN_PIE to 4,
+            Material.HONEY_BOTTLE to 4,
+            // 野菜
+            Material.CARROT to 10,
+            Material.POTATO to 10,
+            Material.BEETROOT to 10,
+            Material.BREAD to 8,
+            Material.DRIED_KELP to 8,
+            Material.MUSHROOM_STEW to 6,
+            Material.BEETROOT_SOUP to 6,
+            Material.GOLDEN_CARROT to 3,
+            // 魚
+            Material.COD to 7,
+            Material.SALMON to 7,
+            Material.COOKED_COD to 5,
+            Material.COOKED_SALMON to 5,
         )
     )
 
