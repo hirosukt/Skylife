@@ -17,10 +17,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
@@ -49,6 +47,7 @@ class Skylife : JavaPlugin(), Listener {
         Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", driver = "org.sqlite.JDBC")
         transaction {
             SchemaUtils.create(User)
+            SchemaUtils.createMissingTablesAndColumns(User)
         }
 
         listOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent).forEach { server.pluginManager.registerEvents(it, this) }
@@ -81,7 +80,7 @@ class Skylife : JavaPlugin(), Listener {
                 player.gameMode = GameMode.SURVIVAL
                 player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
                 player.teleport(Location(player.world, 0.0, 64.0, 0.0))
-                player.sendTitle(ChatColor.GOLD.toString() + "~= Welcome to Skylife =~", "", 10, 70, 20)
+                player.sendTitle(ChatColor.GOLD.toString() + "-= Welcome to Skylife =-", "", 10, 70, 20)
             }
         }
     }
@@ -93,9 +92,7 @@ class Skylife : JavaPlugin(), Listener {
         event.quitMessage = ChatColor.YELLOW.toString() + "${player.name} left the game."
 
         transaction {
-            User.insert {
-                it[lastLogin] = LocalDateTime.now()
-            }
+            User.update({ User.uuid eq player.uniqueId }) { it[lastLogin] = LocalDateTime.now() }
         }
     }
 }

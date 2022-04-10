@@ -88,7 +88,7 @@ object GachaData {
         )
     )
 
-    private val SyokuryoGacha = GachaRecord(
+    val SyokuryoGacha = GachaRecord(
         Material.DRAGON_HEAD,
         "${ChatColor.GOLD}={+ 食料ガチャ +}=",
         listOf(
@@ -137,6 +137,22 @@ object GachaData {
             Material.SALMON to 7,
             Material.COOKED_COD to 5,
             Material.COOKED_SALMON to 5,
+        )
+    )
+
+    val KenzaiGacha = GachaRecord(
+        Material.DRAGON_HEAD,
+        "${ChatColor.GREEN}<+- 建材ガチャ -+>",
+        listOf(
+            "匠の業が詰まった一品",
+            "",
+            "右クリックでランダムな食料が出てくるよ！"
+        ),
+        5040,
+        null,
+        null,
+        mapOf(
+
         )
     )
 
