@@ -70,12 +70,8 @@ object GachaEvent : Listener {
         val player = event.player
         player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
         player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
-        player.sendRawMessage("${ChatColor.LIGHT_PURPLE}[Nyamazon]${ChatColor.RESET} 勤労感謝ガチャをお届けしました。")
+        player.sendRawMessage(nyamazon("勤労感謝"))
     }
-
-    private fun lore(userName: String) = listOf(
-        "所有者: $userName"
-    )
 
     @EventHandler
     fun onInteract(event: PlayerInteractEvent) {

@@ -7,7 +7,8 @@ object GachaData {
     private fun enabled() = listOf(
         // Pair(GachaDataRecord, コマンドで受け取る文字列)
         KinroKanshaGacha to "KinroKanshaGacha",
-        KosekiGacha to "KosekiGacha"
+        KosekiGacha to "KosekiGacha",
+        SyokuryoGacha to "SyokuryoGacha"
     )
 
     val KinroKanshaGacha = GachaRecord(
@@ -100,43 +101,45 @@ object GachaData {
         null,
         null,
         mapOf(
-            // ハズレ
-            Material.PUFFERFISH to 2,
-            Material.ROTTEN_FLESH to 2,
-            Material.POISONOUS_POTATO to 2,
-            // 生肉
-            Material.PORKCHOP to 2,
-            Material.MUTTON to 2,
-            Material.RABBIT to 2,
-            Material.BEEF to 2,
-            Material.CHICKEN to 2,
+            // ハズレ 9%
+            Material.PUFFERFISH to 3,
+            Material.ROTTEN_FLESH to 3,
+            Material.POISONOUS_POTATO to 3,
+            // 生肉 20%
+            Material.PORKCHOP to 4,
+            Material.MUTTON to 4,
+            Material.RABBIT to 4,
+            Material.BEEF to 3,
+            Material.CHICKEN to 3,
             Material.RABBIT_STEW to 2,
-            // 果物
-            Material.APPLE to 6,
-            Material.GOLDEN_APPLE to 2,
-            Material.ENCHANTED_GOLDEN_APPLE to 1,
-            Material.MELON_SLICE to 6,
-            Material.SWEET_BERRIES to 6,
-            Material.GLOW_BERRIES to 6,
-            // 菓子
+            // 果物 16%
+            Material.APPLE to 4,
+            Material.MELON_SLICE to 4,
+            Material.SWEET_BERRIES to 4,
+            Material.GLOW_BERRIES to 4,
+            // 菓子 10%
             Material.CAKE to 4,
             Material.COOKIE to 4,
             Material.PUMPKIN_PIE to 4,
             Material.HONEY_BOTTLE to 4,
-            // 野菜
-            Material.CARROT to 10,
-            Material.POTATO to 10,
-            Material.BEETROOT to 10,
-            Material.BREAD to 8,
-            Material.DRIED_KELP to 8,
-            Material.MUSHROOM_STEW to 6,
-            Material.BEETROOT_SOUP to 6,
-            Material.GOLDEN_CARROT to 3,
-            // 魚
-            Material.COD to 7,
-            Material.SALMON to 7,
-            Material.COOKED_COD to 5,
-            Material.COOKED_SALMON to 5,
+            // 野菜 28%
+            Material.CARROT to 4,
+            Material.POTATO to 4,
+            Material.BEETROOT to 4,
+            Material.BREAD to 4,
+            Material.DRIED_KELP to 4,
+            Material.MUSHROOM_STEW to 2,
+            Material.BEETROOT_SOUP to 2,
+            // 魚 12%
+            Material.COD to 4,
+            Material.SALMON to 4,
+            Material.COOKED_COD to 2,
+            Material.COOKED_SALMON to 2,
+            // 当たり 4%
+            Material.GOLDEN_CARROT to 2,
+            Material.GOLDEN_APPLE to 2,
+            // 大当たり 1%
+            Material.ENCHANTED_GOLDEN_APPLE to 1,
         )
     )
 
