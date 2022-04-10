@@ -1,7 +1,7 @@
 package love.chihuyu.skylife.gacha
 
 import love.chihuyu.skylife.data.GachaData
-import love.chihuyu.skylife.util.Sounds
+import love.chihuyu.skylife.util.MEOW
 import love.chihuyu.skylife.util.addOrDropItem
 import love.chihuyu.skylife.util.getCustomModelDataOrNull
 import love.chihuyu.skylife.util.removeAsPossible
@@ -43,7 +43,7 @@ object GachaShopEvent : Listener {
         val removedCount = playerInv.removeAsPossible(amount * price.second, price.first)
 
         playerInv.addOrDropItem(boughtItemData.getItem(removedCount))
-        player.playSound(player.location, if (removedCount != 0) Sound.ENTITY_EXPERIENCE_ORB_PICKUP else Sounds.MEOW, 0.8f, 1f)
+        player.playSound(player.location, if (removedCount != 0) Sound.ENTITY_EXPERIENCE_ORB_PICKUP else MEOW, 0.8f, 1f)
     }
 
     @EventHandler

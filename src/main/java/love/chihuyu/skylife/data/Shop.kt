@@ -10,7 +10,7 @@ data class Shop(
     val slot: Int,
     val customModelData: Int,
     val price: Pair<Material, Int>,
-    val additionalLore: List<String> = listOf(),
+    val additionalLore: List<String> = listOf()
 ) : CustomHeadItem {
 
     private val lore = listOf(

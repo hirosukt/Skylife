@@ -4,6 +4,7 @@ import love.chihuyu.skylife.data.GachaData
 import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import love.chihuyu.skylife.util.ItemUtil
+import love.chihuyu.skylife.util.MEOW
 import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.ChatColor
 import org.bukkit.Sound
@@ -59,7 +60,7 @@ object GachaEvent : Listener {
     fun onToolBroken(event: PlayerItemBreakEvent) {
         val player = event.player
         player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
-        player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
+        player.playSound(player.location, MEOW, 1f, 1f)
         player.sendRawMessage(nyamazon("勤労感謝"))
     }
 

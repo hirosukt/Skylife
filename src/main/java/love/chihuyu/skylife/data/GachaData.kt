@@ -58,7 +58,7 @@ object GachaData {
             Material.NETHERITE_SHOVEL to 1,
             Material.NETHERITE_PICKAXE to 1,
             Material.NETHERITE_HOE to 1,
-            Material.NETHERITE_AXE to 1,
+            Material.NETHERITE_AXE to 1
         )
     )
 
@@ -86,7 +86,7 @@ object GachaData {
             Material.EMERALD_ORE to 7,
             Material.DIAMOND_ORE to 3,
             Material.ANCIENT_DEBRIS to 1,
-            Material.AMETHYST_SHARD to 5,
+            Material.AMETHYST_SHARD to 5
         )
     )
 
@@ -140,7 +140,7 @@ object GachaData {
             Material.GOLDEN_CARROT to 2,
             Material.GOLDEN_APPLE to 2,
             // 大当たり 1%
-            Material.ENCHANTED_GOLDEN_APPLE to 1,
+            Material.ENCHANTED_GOLDEN_APPLE to 1
         )
     )
 
