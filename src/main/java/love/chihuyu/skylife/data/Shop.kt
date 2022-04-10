@@ -18,5 +18,6 @@ data class Shop(
         * if (additionalLore.isNotEmpty()) arrayOf("") + additionalLore.toTypedArray() else arrayOf()
     )
 
-    override fun getItem(amount: Int) = ItemUtil.create(material, name, amount, true, lore, customModelData)
+    override fun getItem(amount: Int) =
+        ItemUtil.create(material, name, amount, true, lore, customModelData)
 }

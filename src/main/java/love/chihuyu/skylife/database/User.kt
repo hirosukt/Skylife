@@ -3,7 +3,7 @@ package love.chihuyu.skylife.database
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 object User : Table() {
     val uuid = uuid("uuid").default(UUID.randomUUID())

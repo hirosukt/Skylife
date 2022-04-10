@@ -10,7 +10,6 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.scoreboard.DisplaySlot
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -20,17 +19,23 @@ object ScoreboardStats : Listener {
         val manager = plugin.server.scoreboardManager ?: return
         val scoreboard = manager.newScoreboard
         val objective = scoreboard.getObjective("-+ Skylife Stats +-")
-            ?: scoreboard.registerNewObjective("skylife_stats_${player.uniqueId}",
+            ?: scoreboard.registerNewObjective(
+                "skylife_stats_${player.uniqueId}",
                 "",
-                "${ChatColor.GOLD}=━┫${ChatColor.WHITE} Skylife Stats ${ChatColor.GOLD}┣━=")
+                "${ChatColor.GOLD}=━┫${ChatColor.WHITE} Skylife Stats ${ChatColor.GOLD}┣━="
+            )
 
         val blockGachaPoint = 64
         val foodGachaPoint = 32
 
         val nextFoodGacha =
-            31 - (transaction { User.select { User.uuid eq player.uniqueId }.single()[User.foodConsumed] } % foodGachaPoint)
+            31 - (transaction {
+                User.select { User.uuid eq player.uniqueId }.single()[User.foodConsumed]
+            } % foodGachaPoint)
         val nextKenzaiGacha =
-            63 - (transaction { User.select { User.uuid eq player.uniqueId }.single()[User.blockPlaced] } % blockGachaPoint)
+            63 - (transaction {
+                User.select { User.uuid eq player.uniqueId }.single()[User.blockPlaced]
+            } % blockGachaPoint)
 
         transaction {
             if (nextKenzaiGacha == 0) {

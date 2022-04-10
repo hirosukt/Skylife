@@ -16,7 +16,13 @@ data class GachaRecord(
     val chanceMap: Map<Material, Int>
 ) : CustomHeadItem {
     private val size = chanceMap.entries.sumOf { it.value }
-    val shopData = if (price != null && slot != null) Shop(material, name, slot, customModelData + 5000, price) else null
+    val shopData = if (price != null && slot != null) Shop(
+        material,
+        name,
+        slot,
+        customModelData + 5000,
+        price
+    ) else null
 
     override fun getItem(amount: Int): ItemStack {
         val item = ItemUtil.create(material, name, amount, true, lore, customModelData)

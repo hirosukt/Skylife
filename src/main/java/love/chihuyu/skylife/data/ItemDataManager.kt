@@ -6,7 +6,9 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
 object ItemDataManager {
-    fun getTradableItems(vararg materials: Material) = ItemData.tradableList.filter { it.any { item -> item in materials } }.flatten()
+    fun getTradableItems(vararg materials: Material) =
+        ItemData.tradableList.filter { it.any { item -> item in materials } }.flatten()
+
     fun isTradable(item: ItemStack) = isTradable(item.type)
     fun isTradable(material: Material) = ItemData.tradableList.any { it.contains(material) }
 
