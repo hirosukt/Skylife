@@ -23,7 +23,8 @@ object GachaEvent : Listener {
         "所有者: $userName"
     )
 
-    private fun nyamazon(gachaName: String) = "${ChatColor.LIGHT_PURPLE}[Nyamazon]${ChatColor.RESET} ${gachaName}ガチャをお届けしました。"
+    private fun nyamazon(gachaName: String) =
+        "${ChatColor.LIGHT_PURPLE}[Nyamazon]${ChatColor.RESET} ${gachaName}ガチャをお届けしました。"
 
     @EventHandler
     fun onItemConsume(event: PlayerItemConsumeEvent) {
@@ -54,7 +55,7 @@ object GachaEvent : Listener {
             val user = User.select { User.uuid eq player.uniqueId }
 
             if (user.single()[User.blockPlaced] % blockGachaPoint == 0) {
-                player.inventory.addOrDropItem(GachaData.SyokuryoGacha.getItem(1))
+                player.inventory.addOrDropItem(GachaData.KenzaiGacha.getItem(1))
                 player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
                 player.sendRawMessage(nyamazon("建材"))
             }
@@ -87,13 +88,28 @@ object GachaEvent : Listener {
         event.isCancelled = true
 
         val player = event.player
+
+        // これも GachaRecord に入れておくほうが良い
+        val chooseTimes = when (gacha.customModelData) {
+            5040 -> 4
+            else -> 1
+        }
+
+        val dropCount = when (gacha.customModelData) {
+            5040 -> 16
+            else -> 1
+        }
+
         repeat(if (player.isSneaking) usedItem.amount else 1) {
-            val resultItem = ItemUtil.create(
-                gacha.chooseMaterial(),
-                lore = lore(player.displayName)
-            )
+            repeat(chooseTimes) {
+                val item = ItemUtil.create(
+                    gacha.chooseMaterial(),
+                    count = dropCount,
+                    lore = lore(player.displayName)
+                )
+                player.inventory.addOrDropItem(item)
+            }
             usedItem.amount -= 1
-            player.inventory.addOrDropItem(resultItem)
         }
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
     }
