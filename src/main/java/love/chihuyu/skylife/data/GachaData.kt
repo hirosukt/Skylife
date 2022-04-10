@@ -13,7 +13,7 @@ object GachaData {
     )
 
     val KinroKanshaGacha = GachaRecord(
-        Material.DRAGON_HEAD,
+        Material.PAPER,
         "${ChatColor.AQUA}-=+ 勤労感謝ガチャ +=-",
         listOf(
             "いつも働いてくれてありがとう！",
@@ -63,7 +63,7 @@ object GachaData {
     )
 
     private val KosekiGacha = GachaRecord(
-        Material.DRAGON_HEAD,
+        Material.PAPER,
         "${ChatColor.BLUE}>=+ 鉱石ガチャ +=<",
         listOf(
             "お疲れ様！",
@@ -91,7 +91,7 @@ object GachaData {
     )
 
     val SyokuryoGacha = GachaRecord(
-        Material.DRAGON_HEAD,
+        Material.PAPER,
         "${ChatColor.GOLD}={+ 食料ガチャ +}=",
         listOf(
             "ご馳走の匂いがする...",
@@ -145,7 +145,7 @@ object GachaData {
     )
 
     val KenzaiGacha = GachaRecord(
-        Material.DRAGON_HEAD,
+        Material.PAPER,
         "${ChatColor.GREEN}<+- 建材ガチャ -+>",
         listOf(
             "匠の業が詰まった一品",
