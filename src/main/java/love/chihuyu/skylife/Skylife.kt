@@ -8,6 +8,7 @@ import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
+import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -63,6 +64,8 @@ class Skylife : JavaPlugin(), Listener {
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
 
         event.joinMessage = ChatColor.YELLOW.toString() + "${player.name} joined the game."
+
+        ScoreboardStats.update(player)
 
         transaction {
             val user = User.select { User.uuid eq player.uniqueId }
