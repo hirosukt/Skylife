@@ -12,7 +12,6 @@ data class Shop(
     val price: Pair<Material, Int>,
     val additionalLore: List<String> = listOf()
 ) : CustomItem {
-
     private val lore = listOf(
         "${price.first} x${price.second} で交換できます。",
         *if (additionalLore.isNotEmpty()) arrayOf("") + additionalLore.toTypedArray() else arrayOf()

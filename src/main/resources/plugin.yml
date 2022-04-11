@@ -19,12 +19,7 @@ commands:
 permissions:
   skylife.command.*:
     default: op
-    children:
-      skylife.command.barter: true
-      skylife.command.gacha: true
   skylife.command.barter:
     default: true
   skylife.command.gacha:
     default: true
-  skylife.command.gachagive:
-    default: op
