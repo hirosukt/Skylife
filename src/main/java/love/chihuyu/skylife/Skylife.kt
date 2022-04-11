@@ -69,46 +69,25 @@ class Skylife : JavaPlugin(), Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         val player = event.player
-        player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
+        var joinMessage = "${ChatColor.YELLOW}${player.name} joined the game."
 
-        event.joinMessage = ChatColor.YELLOW.toString() + "${player.name} joined the game."
+        if (!player.hasPlayedBefore()) {
+            joinMessage += " (First Join)"
+            player.gameMode = GameMode.SURVIVAL
+            player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
 
-        ScoreboardStats.update(player)
-
-        transaction {
-            val user = User.select { User.uuid eq player.uniqueId }
-
-            if (user.count() <= 0) {
-                User.insert {
-                    it[uuid] = player.uniqueId
-                    it[coin] = 0
-                    it[firstLogin] = LocalDateTime.now()
-                    it[lastLogin] = LocalDateTime.now()
-                }
-
-                event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
-                player.gameMode = GameMode.SURVIVAL
-                player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
-                player.teleport(Location(player.world, 0.0, 64.0, 0.0))
-                player.sendTitle(
-                    ChatColor.GOLD.toString() + "-= Welcome to Skylife =-",
-                    "",
-                    10,
-                    70,
-                    20
-                )
-            }
+            player.teleport(Location(player.world, 0.0, 64.0, 0.0))
+            player.sendTitle("${ChatColor.GOLD}-= Welcome to Skylife =-", "", 10, 70, 20)
+            transaction { User.insert { it[uuid] = player.uniqueId } }
         }
+
+        event.joinMessage = joinMessage
+        ScoreboardStats.update(player)
+        player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        val player = event.player
-
-        event.quitMessage = ChatColor.YELLOW.toString() + "${player.name} left the game."
-
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) { it[lastLogin] = LocalDateTime.now() }
-        }
+        event.quitMessage = "${ChatColor.YELLOW}${event.player.name} left the game."
     }
 }
