@@ -238,6 +238,6 @@ object ItemData {
             Material.PUMPKIN_SEEDS,
             Material.MELON_SEEDS,
             Material.BEETROOT_SEEDS
-        ),
+        )
     )
 }

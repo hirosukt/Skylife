@@ -21,12 +21,22 @@ abstract class Command(private val name: String) : CommandExecutor, TabCompleter
         command.tabCompleter = this
     }
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    override fun onCommand(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): Boolean {
         onCommand(sender, label, args)
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String>? {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): List<String>? {
         return onTabComplete(sender, label, args)
     }
 
@@ -38,5 +48,9 @@ abstract class Command(private val name: String) : CommandExecutor, TabCompleter
     /**
      * コマンド引数の補完処理
      */
-    abstract fun onTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String>?
+    abstract fun onTabComplete(
+        sender: CommandSender,
+        label: String,
+        args: Array<out String>
+    ): List<String>?
 }

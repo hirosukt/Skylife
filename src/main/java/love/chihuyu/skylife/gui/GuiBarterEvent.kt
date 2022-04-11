@@ -41,7 +41,8 @@ object GuiBarterEvent : Listener {
 
         fun updateGui() {
             val tradingItems = Areas.trading.mapNotNull(barterInv::getItem).map { it.type }
-            val tradableItems = ItemDataManager.getTradableItems(*tradingItems.toTypedArray()).toList()
+            val tradableItems =
+                ItemDataManager.getTradableItems(*tradingItems.toTypedArray()).toList()
 
             val page = pageTemp[player] ?: 0
             val chunkedTradableItems = tradableItems.chunked(36).getOrNull(page) ?: listOf()
@@ -99,7 +100,9 @@ object GuiBarterEvent : Listener {
             }
             updateGui()
 
-            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player] ?: 0) > 0) {
+            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player]
+                    ?: 0) > 0
+            ) {
                 // とりあえず０
                 pageTemp[player] = 0
                 updateGui()

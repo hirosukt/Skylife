@@ -12,12 +12,20 @@ object GachaCommand : Command("gachagive") {
 
         val target = sender.server.onlinePlayers.find { it.displayName == args[0] } ?: return
         val gacha = GachaData.pairString[args[1]] ?: return
-        val amount = try { args[2].toIntOrNull() ?: 1 } catch (e: IndexOutOfBoundsException) { 1 }
+        val amount = try {
+            args[2].toIntOrNull() ?: 1
+        } catch (e: IndexOutOfBoundsException) {
+            1
+        }
 
         target.inventory.addOrDropItem(gacha.getItem(amount))
     }
 
-    override fun onTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        label: String,
+        args: Array<out String>
+    ): List<String> {
         val playerNames = sender.server.onlinePlayers.toTypedArray().map { it.displayName }
         val gachaNames = GachaData.pairString.keys.toList()
         val amounts = listOf("1", "16", "32", "64")
