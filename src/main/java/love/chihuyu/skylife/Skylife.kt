@@ -18,9 +18,10 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 
 class Skylife : JavaPlugin(), Listener {
 
@@ -33,37 +34,24 @@ class Skylife : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        // Plugin startup logic
-        logger.info("plugin has loaded.")
+        val enabledCommands = setOf(GuiBarterCommand, GachaCommand, GachaShopCommand)
+        val enabledEvents = setOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent)
 
-        // config fix
-        config.options().copyDefaults(true)
-        saveResource("config.yml", false)
-
-        listOf(GuiBarterCommand, GachaCommand, GachaShopCommand).forEach { it.register() }
+        enabledCommands.forEach { it.register() }
+        enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
+        logger.info("This Plug has Enabled")
 
         ItemDataManager.checkDuplicate()
-
-        Database.connect(
-            "jdbc:sqlite:${plugin.dataFolder}/userstats.db",
-            driver = "org.sqlite.JDBC"
-        )
+        Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", "org.sqlite.JDBC")
         transaction {
             SchemaUtils.create(User)
             SchemaUtils.createMissingTablesAndColumns(User)
         }
-
-        listOf(
-            this,
-            GuiBarterEvent,
-            GachaEvent,
-            GachaShopEvent
-        ).forEach { server.pluginManager.registerEvents(it, this) }
+        logger.info("This Plugin has Loaded.")
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
-        logger.info("plugin has unloaded.")
+        logger.info("This Plugin has Disabled.")
     }
 
     @EventHandler

@@ -62,7 +62,7 @@ object GachaData {
         )
     )
 
-    private val KosekiGacha = GachaRecord(
+    val KosekiGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.BLUE}>=+ 鉱石ガチャ +=<",
         listOf(
