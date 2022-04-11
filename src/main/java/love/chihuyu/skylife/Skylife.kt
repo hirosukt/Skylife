@@ -73,9 +73,6 @@ class Skylife : JavaPlugin(), Listener {
             if (user.count() <= 0) {
                 User.insert {
                     it[uuid] = player.uniqueId
-                    it[coin] = 0
-                    it[firstLogin] = LocalDateTime.now()
-                    it[lastLogin] = LocalDateTime.now()
                 }
 
                 event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
@@ -92,9 +89,5 @@ class Skylife : JavaPlugin(), Listener {
         val player = event.player
 
         event.quitMessage = ChatColor.YELLOW.toString() + "${player.name} left the game."
-
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) { it[lastLogin] = LocalDateTime.now() }
-        }
     }
 }
