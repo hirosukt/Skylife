@@ -1,7 +1,8 @@
 package love.chihuyu.skylife
 
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.database.User
+import love.chihuyu.skylife.database.GachasTable
+import love.chihuyu.skylife.database.UsersTable
 import love.chihuyu.skylife.gacha.GachaCommand
 import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaShopCommand
@@ -20,7 +21,6 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 
 class Skylife : JavaPlugin(), Listener {
 
@@ -40,16 +40,20 @@ class Skylife : JavaPlugin(), Listener {
         config.options().copyDefaults(true)
         saveResource("config.yml", false)
 
-        listOf(GuiBarterCommand, GachaCommand, GachaShopCommand).forEach { it.register() }
-
-        ItemDataManager.checkDuplicate()
-
         Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", driver = "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.create(User)
-            SchemaUtils.createMissingTablesAndColumns(User)
+            SchemaUtils.create(UsersTable)
+            SchemaUtils.createMissingTablesAndColumns(UsersTable)
         }
 
+        Database.connect("jdbc:sqlite:${plugin.dataFolder}/gachastorages.db", driver = "org.sqlite.JDBC")
+        transaction {
+            SchemaUtils.create(GachasTable)
+            SchemaUtils.createMissingTablesAndColumns(GachasTable)
+        }
+
+        ItemDataManager.checkDuplicate()
+        listOf(GuiBarterCommand, GachaCommand, GachaShopCommand).forEach { it.register() }
         listOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent).forEach { server.pluginManager.registerEvents(it, this) }
     }
 
@@ -67,21 +71,11 @@ class Skylife : JavaPlugin(), Listener {
 
         ScoreboardStats.update(player)
 
-        transaction {
-            val user = User.select { User.uuid eq player.uniqueId }
-
-            if (user.count() <= 0) {
-                User.insert {
-                    it[uuid] = player.uniqueId
-                }
-
-                event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
-                player.gameMode = GameMode.SURVIVAL
-                player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
-                player.teleport(Location(player.world, 0.0, 64.0, 0.0))
-                player.sendTitle(ChatColor.GOLD.toString() + "-= Welcome to Skylife =-", "", 10, 70, 20)
-            }
-        }
+        event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
+        player.gameMode = GameMode.SURVIVAL
+        player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
+        player.teleport(Location(player.world, 0.0, 64.0, 0.0))
+        player.sendTitle(ChatColor.GOLD.toString() + "-= Welcome to Skylife =-", "", 10, 70, 20)
     }
 
     @EventHandler

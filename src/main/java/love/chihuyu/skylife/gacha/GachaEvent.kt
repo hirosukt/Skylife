@@ -1,13 +1,12 @@
 package love.chihuyu.skylife.gacha
 
 import love.chihuyu.skylife.data.GachaData
-import love.chihuyu.skylife.database.User
+import love.chihuyu.skylife.database.UserEntity
 import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import love.chihuyu.skylife.util.ItemUtil
 import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.ChatColor
 import org.bukkit.Sound
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -15,10 +14,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 object GachaEvent : Listener {
 
@@ -29,19 +24,11 @@ object GachaEvent : Listener {
     fun nyamazon(gachaName: String) =
         "${ChatColor.LIGHT_PURPLE}[Nyamazon]${ChatColor.RESET} ${gachaName}ガチャをお届けしました。"
 
-    private fun updateStats(player: Player, value: Column<Int>) {
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) {
-                it[value] = User.select { uuid eq player.uniqueId }.single()[value].inc()
-            }
-        }
-    }
-
     @EventHandler
     fun onItemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
 
-        updateStats(player, User.foodConsumed)
+        UserEntity.findOrNew(player).foodConsumed += 1
 
         ScoreboardStats.update(player)
     }
@@ -50,7 +37,7 @@ object GachaEvent : Listener {
     fun onBlockPlace(event: BlockPlaceEvent) {
         val player = event.player
 
-        updateStats(player, User.blockPlaced)
+        UserEntity.findOrNew(player).blockPlaced += 1
 
         ScoreboardStats.update(player)
     }
@@ -58,7 +45,11 @@ object GachaEvent : Listener {
     @EventHandler
     fun onToolBroken(event: PlayerItemBreakEvent) {
         val player = event.player
-        player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
+
+        UserEntity.findOrNew(player).toolBroken += 1
+
+//        player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
+        (UserEntity.findOrNew(player).gachas.limit(1).firstOrNull() ?: return).KinroKansha += 1
         player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
         player.sendRawMessage(nyamazon("勤労感謝"))
     }
