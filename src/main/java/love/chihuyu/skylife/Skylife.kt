@@ -1,7 +1,8 @@
 package love.chihuyu.skylife
 
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.database.User
+import love.chihuyu.skylife.database.GachasTable
+import love.chihuyu.skylife.database.UsersTable
 import love.chihuyu.skylife.gacha.GachaCommand
 import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaShopCommand
@@ -9,7 +10,6 @@ import love.chihuyu.skylife.gacha.GachaShopEvent
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
 import love.chihuyu.skylife.scoreboard.ScoreboardStats
-import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -19,6 +19,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insertIgnore
@@ -50,8 +51,8 @@ class Skylife : JavaPlugin(), Listener {
         }
         Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.create(User)
-            SchemaUtils.createMissingTablesAndColumns(User)
+            SchemaUtils.create(GachasTable)
+            SchemaUtils.createMissingTablesAndColumns(GachasTable)
         }
         logger.info("This Plugin has Loaded")
     }
@@ -66,7 +67,7 @@ class Skylife : JavaPlugin(), Listener {
         var joinMessage = "${ChatColor.YELLOW}${player.name} joined the game"
 
         if (!player.hasPlayedBefore()) {
-            joinMessage += " (First Join)"
+            joinMessage += "${ChatColor.LIGHT_PURPLE} (First Join)"
             player.gameMode = GameMode.SURVIVAL
             player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
 
