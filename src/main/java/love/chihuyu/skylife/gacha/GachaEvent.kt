@@ -4,7 +4,6 @@ import love.chihuyu.skylife.data.GachaData
 import love.chihuyu.skylife.database.UserEntity
 import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import love.chihuyu.skylife.util.ItemUtil
-import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.ChatColor
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
