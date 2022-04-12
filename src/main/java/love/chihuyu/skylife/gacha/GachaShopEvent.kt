@@ -16,21 +16,21 @@ import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.inventory.PlayerInventory
 
 object GachaShopEvent : Listener {
-
     @EventHandler
     fun onClick(event: InventoryClickEvent) {
         if (event.view.title != "GachaShop") return
+
         event.isCancelled = true
 
         val clickedInvType = event.clickedInventory?.type ?: return
         val playerInv = event.view.bottomInventory as PlayerInventory
         if (clickedInvType == playerInv.type) return
-        val clickedItem = event.clickedInventory?.getItem(event.slot) ?: return
 
+        val clickedItem = event.clickedInventory?.getItem(event.slot) ?: return
         val boughtItemData = GachaData.buyables[clickedItem.getCustomModelDataOrNull()] ?: return
+
         val shopData = boughtItemData.shopData!!
         val price = shopData.price
-
         val amount = when (event.click) {
             ClickType.SHIFT_LEFT -> 64
             ClickType.SHIFT_RIGHT -> 16
@@ -39,16 +39,11 @@ object GachaShopEvent : Listener {
             else -> 0
         }
 
-        val player = event.whoClicked as Player
         val removedCount = playerInv.removeAsPossible(amount * price.second, price.first)
-
         playerInv.addOrDropItem(boughtItemData.getItem(removedCount))
-        player.playSound(
-            player.location,
-            if (removedCount != 0) Sound.ENTITY_EXPERIENCE_ORB_PICKUP else MEOW,
-            0.8f,
-            1f
-        )
+        val player = event.whoClicked as Player
+        val sound = if (removedCount == 0) MEOW else Sound.ENTITY_EXPERIENCE_ORB_PICKUP
+        player.playSound(player.location, sound, 0.8f, 1f)
     }
 
     @EventHandler

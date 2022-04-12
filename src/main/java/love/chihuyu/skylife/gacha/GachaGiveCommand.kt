@@ -6,10 +6,15 @@ import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object GachaCommand : Command("gachagive") {
+object GachaGiveCommand : Command("gachagive") {
     override fun onCommand(sender: CommandSender, label: String, args: Array<out String>) {
-        if (!(sender is Player && sender.hasPermission("skylife.command.gachagive"))) return
+        if (sender !is Player) return
+        if (!sender.hasPermission("skylife.command.gachagive")) {
+            sender.sendRawMessage("このコマンドを実行する権限がありません。")
+            return
+        }
 
+        // TODO: Error Handling
         val target = sender.server.onlinePlayers.find { it.displayName == args[0] } ?: return
         val gacha = GachaData.pairString[args[1]] ?: return
         val amount = try {
@@ -35,6 +40,6 @@ object GachaCommand : Command("gachagive") {
             2 -> gachaNames
             3 -> amounts
             else -> listOf()
-        }
+        }.filter { it.contains(args[args.size - 1]) }
     }
 }
