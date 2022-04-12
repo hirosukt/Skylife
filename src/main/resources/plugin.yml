@@ -8,18 +8,21 @@ website: chihuyu.love
 commands:
   barter:
     aliases:
-      - "ba"
       - "trade"
-  gacha:
+      - "ba"
+      - "b"
+  gachashop:
     aliases:
+      - "gacha"
       - "ga"
+      - "g"
   gachagive:
     aliases:
-      - "gag"
+      - "gg"
 permissions:
   skylife.command.*:
     default: op
   skylife.command.barter:
     default: true
-  skylife.command.gacha:
+  skylife.command.gachashop:
     default: true
