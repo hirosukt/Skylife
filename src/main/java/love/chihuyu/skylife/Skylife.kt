@@ -1,15 +1,15 @@
 package love.chihuyu.skylife
 
+// import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.database.GachasTable
-import love.chihuyu.skylife.database.UsersTable
-import love.chihuyu.skylife.gacha.GachaCommand
+import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gacha.GachaEvent
+import love.chihuyu.skylife.gacha.GachaGiveCommand
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
 import love.chihuyu.skylife.gui.GuiBarterCommand
 import love.chihuyu.skylife.gui.GuiBarterEvent
-import love.chihuyu.skylife.scoreboard.ScoreboardStats
+import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -19,7 +19,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insertIgnore
@@ -36,7 +35,7 @@ class Skylife : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        val enabledCommands = setOf(GuiBarterCommand, GachaCommand, GachaShopCommand)
+        val enabledCommands = setOf(GuiBarterCommand, GachaGiveCommand, GachaShopCommand)
         val enabledEvents = setOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent)
         enabledCommands.forEach { it.register() }
         enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
@@ -51,8 +50,8 @@ class Skylife : JavaPlugin(), Listener {
         }
         Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.create(GachasTable)
-            SchemaUtils.createMissingTablesAndColumns(GachasTable)
+            SchemaUtils.create(User)
+            SchemaUtils.createMissingTablesAndColumns(User)
         }
         logger.info("This Plugin has Loaded")
     }
@@ -80,7 +79,7 @@ class Skylife : JavaPlugin(), Listener {
         }
 
         event.joinMessage = joinMessage
-        ScoreboardStats.update(player)
+        // ScoreboardStats.update(player)
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
     }
 
