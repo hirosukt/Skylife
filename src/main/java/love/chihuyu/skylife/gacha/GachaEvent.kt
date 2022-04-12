@@ -1,7 +1,8 @@
 package love.chihuyu.skylife.gacha
 
+import love.chihuyu.skylife.Skylife.Companion.plugin
 import love.chihuyu.skylife.data.GachaData
-import love.chihuyu.skylife.database.User
+import love.chihuyu.skylife.database.UserEntity
 import love.chihuyu.skylife.util.ItemUtil
 import love.chihuyu.skylife.util.MEOW
 import love.chihuyu.skylife.util.addOrDropItem
@@ -16,10 +17,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
-import org.jetbrains.exposed.sql.SqlExpressionBuilder
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 object GachaEvent : Listener {
 
@@ -35,17 +32,11 @@ object GachaEvent : Listener {
     fun onItemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
 
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) {
-                with(SqlExpressionBuilder) {
-                    it.update(foodConsumed, foodConsumed + 1)
-                }
-            }
-        }
-        val count =
-            transaction { User.select { User.uuid eq player.uniqueId }.single()[User.foodConsumed] }
-        if (count % 32 != 0) return
-        player.inventory.addOrDropItem(GachaData.ShokuryoGacha.getItem(1))
+        UserEntity.findOrNew(player).gachas.single().SyokuryoGacha += 1
+
+        if (UserEntity.findOrNew(player).foodConsumed % 32 != 0) return
+//        player.inventory.addOrDropItem(GachaData.ShokuryoGacha.getItem(1))
+        UserEntity.findOrNew(player).foodConsumed += 1
         player.playSound(player.location, MEOW, 1f, 1f)
         player.sendRawMessage(nyamazon("食料"))
     }
@@ -54,17 +45,12 @@ object GachaEvent : Listener {
     fun onBlockPlace(event: BlockPlaceEvent) {
         val player = event.player
 
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) {
-                with(SqlExpressionBuilder) {
-                    it.update(blockPlaced, blockPlaced + 1)
-                }
-            }
-        }
-        val count =
-            transaction { User.select { User.uuid eq player.uniqueId }.single()[User.blockPlaced] }
-        if (count % 64 != 0) return
-        player.inventory.addOrDropItem(GachaData.KenzaiGacha.getItem(1))
+        UserEntity.findOrNew(player).blockPlaced += 1
+
+        if (UserEntity.findOrNew(player).blockPlaced % 64 != 0) return
+//        player.inventory.addOrDropItem(GachaData.KenzaiGacha.getItem(1))
+        UserEntity.findOrNew(player).gachas.single().KenzaiGacha += 1
+        plugin.logger.info(UserEntity.findOrNew(player).gachas.single().KenzaiGacha.toString())
         player.playSound(player.location, MEOW, 1f, 1f)
         player.sendRawMessage(nyamazon("建材"))
     }
@@ -73,14 +59,10 @@ object GachaEvent : Listener {
     fun onToolBroken(event: PlayerItemBreakEvent) {
         val player = event.player
 
-        transaction {
-            User.update({ User.uuid eq player.uniqueId }) {
-                with(SqlExpressionBuilder) {
-                    it.update(toolBroken, toolBroken + 1)
-                }
-            }
-        }
-        player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
+        UserEntity.findOrNew(player).toolBroken += 1
+
+//        player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
+        UserEntity.findOrNew(player).gachas.single().KinroKansha += 1
         player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
         player.sendRawMessage(nyamazon("勤労感謝"))
     }

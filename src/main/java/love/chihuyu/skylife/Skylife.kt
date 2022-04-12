@@ -4,6 +4,7 @@ package love.chihuyu.skylife
 import love.chihuyu.skylife.barter.BarterCommand
 import love.chihuyu.skylife.barter.BarterEvent
 import love.chihuyu.skylife.data.ItemDataManager
+import love.chihuyu.skylife.database.UserEntity
 import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaGiveCommand
@@ -19,9 +20,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class Skylife : JavaPlugin(), Listener {
@@ -74,9 +75,11 @@ class Skylife : JavaPlugin(), Listener {
             player.sendTitle("${ChatColor.GOLD}-= Welcome to Skylife =-", "", 10, 70, 20)
         }
 
-        transaction {
-            User.insertIgnore { it[uuid] = player.uniqueId }
-        }
+        UserEntity.findOrNew(player).uuid = EntityID(player.uniqueId, User)
+
+//        transaction {
+//            UserTable.insertIgnore { it[uuid] = player.uniqueId }
+//        }
 
         event.joinMessage = joinMessage
         // ScoreboardStats.update(player)
