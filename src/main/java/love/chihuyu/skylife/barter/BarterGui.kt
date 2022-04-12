@@ -1,12 +1,12 @@
-package love.chihuyu.skylife.gui
+package love.chihuyu.skylife.barter
 
-import love.chihuyu.skylife.gui.constants.Areas
-import love.chihuyu.skylife.gui.constants.Panels
+import love.chihuyu.skylife.barter.constants.Areas
+import love.chihuyu.skylife.barter.constants.Panels
 import org.bukkit.Bukkit
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 
-object GuiBarter {
+object BarterGui {
 
     val page = hashMapOf<Player, Int>()
 

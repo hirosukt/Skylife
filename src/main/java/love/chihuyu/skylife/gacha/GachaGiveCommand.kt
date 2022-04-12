@@ -1,6 +1,6 @@
 package love.chihuyu.skylife.gacha
 
-import love.chihuyu.skylife.Command
+import love.chihuyu.skylife.base.Command
 import love.chihuyu.skylife.data.GachaData
 import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.command.CommandSender

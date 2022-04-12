@@ -1,14 +1,14 @@
 package love.chihuyu.skylife
 
 // import love.chihuyu.skylife.scoreboard.ScoreboardStats
+import love.chihuyu.skylife.barter.BarterCommand
+import love.chihuyu.skylife.barter.BarterEvent
 import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaGiveCommand
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
-import love.chihuyu.skylife.gui.GuiBarterCommand
-import love.chihuyu.skylife.gui.GuiBarterEvent
 import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
@@ -35,8 +35,8 @@ class Skylife : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        val enabledCommands = setOf(GuiBarterCommand, GachaGiveCommand, GachaShopCommand)
-        val enabledEvents = setOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent)
+        val enabledCommands = setOf(BarterCommand, GachaGiveCommand, GachaShopCommand)
+        val enabledEvents = setOf(this, BarterEvent, GachaEvent, GachaShopEvent)
         enabledCommands.forEach { it.register() }
         enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
         logger.info("This Plug has Enabled")

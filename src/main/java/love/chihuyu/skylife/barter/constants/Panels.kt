@@ -1,4 +1,4 @@
-package love.chihuyu.skylife.gui.constants
+package love.chihuyu.skylife.barter.constants
 
 import love.chihuyu.skylife.util.ItemUtil
 import net.md_5.bungee.api.ChatColor

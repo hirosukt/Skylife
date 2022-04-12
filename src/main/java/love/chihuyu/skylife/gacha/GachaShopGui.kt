@@ -1,7 +1,7 @@
 package love.chihuyu.skylife.gacha
 
+import love.chihuyu.skylife.barter.constants.Panels
 import love.chihuyu.skylife.data.GachaData
-import love.chihuyu.skylife.gui.constants.Panels
 import org.bukkit.Bukkit
 import org.bukkit.entity.HumanEntity
 

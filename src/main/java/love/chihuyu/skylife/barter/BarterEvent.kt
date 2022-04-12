@@ -1,9 +1,9 @@
-package love.chihuyu.skylife.gui
+package love.chihuyu.skylife.barter
 
+import love.chihuyu.skylife.barter.BarterGui.page
+import love.chihuyu.skylife.barter.constants.Areas
+import love.chihuyu.skylife.barter.constants.Panels
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.gui.GuiBarter.page
-import love.chihuyu.skylife.gui.constants.Areas
-import love.chihuyu.skylife.gui.constants.Panels
 import love.chihuyu.skylife.util.ItemUtil
 import love.chihuyu.skylife.util.MEOW
 import love.chihuyu.skylife.util.addOrDropItem
@@ -19,7 +19,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.inventory.PlayerInventory
 
-object GuiBarterEvent : Listener {
+object BarterEvent : Listener {
 
     private val tradableLore = listOf(
         "左クリック ->  1個",

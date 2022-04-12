@@ -5,7 +5,7 @@ import org.bukkit.Material
 
 object GachaData {
     private fun enabled() = listOf(
-        //NOTE:
+        // NOTE:
         // - val to <コマンドで受け取る文字列>
         // - 変数宣言はより下の変数を受け取れないので関数として上に置いている
         KinroKanshaGacha to "kinrokansha",

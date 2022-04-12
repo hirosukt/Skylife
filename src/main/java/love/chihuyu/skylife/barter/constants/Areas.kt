@@ -1,4 +1,4 @@
-package love.chihuyu.skylife.gui.constants
+package love.chihuyu.skylife.barter.constants
 
 /**
  * @property trading the area in which player can put items.
