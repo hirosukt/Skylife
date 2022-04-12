@@ -1,3 +1,3 @@
-package love.chihuyu.skylife.gui
-
-object GuiGachaHolder
+// package love.chihuyu.skylife.gui
+//
+// object GuiGachaHolder
