@@ -14,9 +14,10 @@ data class Shop(
 ) : CustomItem {
     private val lore = listOf(
         "${price.first} x${price.second} で交換できます。",
-        *if (additionalLore.isNotEmpty()) arrayOf("") + additionalLore.toTypedArray() else arrayOf()
+        *if (additionalLore.isEmpty()) arrayOf() else arrayOf(""),
+        *additionalLore.toTypedArray()
     )
 
     override fun getItem(amount: Int) =
-        ItemUtil.create(material, name, amount, true, lore, customModelData)
+        ItemUtil.create(material, name, amount, false, lore, customModelData)
 }
