@@ -8,22 +8,23 @@ import org.bukkit.entity.Player
 
 object GuiBarter {
 
-    fun open(player: HumanEntity) {
-        GuiBarterEvent.pageTemp[player as Player] = 0
+    val page = hashMapOf<Player, Int>()
 
-        val inventory = Bukkit.createInventory(null, 54, "Barter")
-        Areas.tradable.forEach { inventory.setItem(it, Panels.fill) }
+    fun open(player: HumanEntity) {
+        val barterGui = Bukkit.createInventory(null, 54, "Barter")
+
+        Areas.tradable.forEach { barterGui.setItem(it, Panels.fill) }
         Areas.separator.forEach {
-            inventory.setItem(
-                it,
-                when (it) {
-                    38 -> Panels.previousPage
+            barterGui.setItem(
+                it, when (it) {
+                    38 -> Panels.prevPage
                     47 -> Panels.nextPage
-                    else -> Panels.separator
+                    else -> Panels.separate
                 }
             )
         }
 
-        player.openInventory(inventory)
+        this.page[player as Player] = 0
+        player.openInventory(barterGui)
     }
 }

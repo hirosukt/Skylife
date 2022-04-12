@@ -1,9 +1,11 @@
 package love.chihuyu.skylife.gui
 
 import love.chihuyu.skylife.data.ItemDataManager
+import love.chihuyu.skylife.gui.GuiBarter.page
 import love.chihuyu.skylife.gui.constants.Areas
 import love.chihuyu.skylife.gui.constants.Panels
 import love.chihuyu.skylife.util.ItemUtil
+import love.chihuyu.skylife.util.MEOW
 import love.chihuyu.skylife.util.addOrDropItem
 import love.chihuyu.skylife.util.removeAsPossible
 import org.bukkit.Material
@@ -26,11 +28,10 @@ object GuiBarterEvent : Listener {
         "シフト＋右 -> 16個"
     )
 
-    val pageTemp = hashMapOf<Player, Int>()
-
     @EventHandler
     fun onClick(event: InventoryClickEvent) {
         if (event.view.title != "Barter") return
+
         event.isCancelled = true
 
         val clickedItem = event.currentItem ?: return
@@ -39,51 +40,25 @@ object GuiBarterEvent : Listener {
         val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
 
-        fun updateGui() {
-            val tradingItems = Areas.trading.mapNotNull(barterInv::getItem).map { it.type }
-            val tradableItems =
-                ItemDataManager.getTradableItems(*tradingItems.toTypedArray()).toList()
-
-            val page = pageTemp[player] ?: 0
-            val chunkedTradableItems = tradableItems.chunked(36).getOrNull(page) ?: listOf()
-
-            for ((i, slot) in Areas.tradable.withIndex()) {
-                barterInv.setItem(
-                    slot,
-                    if (i < chunkedTradableItems.size) {
-                        ItemUtil.create(chunkedTradableItems[i], lore = tradableLore)
-                    } else Panels.fill
-                )
-            }
-
-            player.updateInventory()
-        }
-
         if (clickedInvType == playerInv.type) {
             val clone = clickedItem.clone()
+
             playerInv.setItem(event.slot, ItemUtil.create(Material.AIR))
             barterInv.addItem(clone).forEach { playerInv.addItem(it.value) }
-            updateGui()
         } else if (clickedInvType == barterInv.type) {
             val slot = event.slot
 
-            // paging
-            if (slot == 38 && pageTemp[player] != 0) {
-                pageTemp[player] = pageTemp[player]?.dec() ?: 0
-                player.playSound(player.location, Sound.UI_BUTTON_CLICK, 0.8f, 1f)
-            } else if (slot == 47 && barterInv.getItem(53)?.itemMeta?.displayName != " ") {
-                pageTemp[player] = pageTemp[player]?.inc() ?: 0
-                player.playSound(player.location, Sound.UI_BUTTON_CLICK, 0.8f, 1f)
-            }
-
             if (slot in Areas.trading) {
                 val clone = clickedItem.clone()
+
                 barterInv.setItem(event.slot, ItemUtil.create(Material.AIR))
                 player.inventory.addOrDropItem(clone)
-            } else if (slot in Areas.tradable) {
-                if (!ItemDataManager.isTradable(clickedItem.type)) return
-                val fuckingFuck = ItemDataManager.getTradableItems(clickedItem.type)
+            }
 
+            if (slot in Areas.tradable) {
+                if (!ItemDataManager.isTradable(clickedItem.type)) return
+
+                val tradableItems = ItemDataManager.getTradableItems(clickedItem.type)
                 val amount = when (event.click) {
                     ClickType.SHIFT_LEFT -> 64
                     ClickType.SHIFT_RIGHT -> 16
@@ -92,21 +67,46 @@ object GuiBarterEvent : Listener {
                     else -> 0
                 }
                 val removedCount = barterInv.removeAsPossible(amount) { position, item ->
-                    position in Areas.trading && fuckingFuck.contains(item.type)
+                    position in Areas.trading && tradableItems.contains(item.type)
                 }
 
                 playerInv.addOrDropItem(ItemUtil.create(clickedItem.type, count = removedCount))
                 player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.8f, 1f)
             }
-            updateGui()
 
-            if (barterInv.getItem(Areas.tradable.first())?.itemMeta?.displayName == " " && (pageTemp[player]
-                    ?: 0) > 0
-            ) {
-                // とりあえず０
-                pageTemp[player] = 0
-                updateGui()
+            if (slot in listOf(38, 47)) {
+                var sound = MEOW
+                val required = if (slot == 38) page[player]!!.dec() else page[player]!!.inc()
+
+                if (if (slot == 38) required >= 0 else barterInv.getItem(53) != Panels.fill) {
+                    page[player] = required
+                    sound = Sound.UI_BUTTON_CLICK
+                }
+
+                player.playSound(player.location, sound, 0.8f, 1f)
             }
+        }
+
+        fun updateGui() {
+            val tradingItems = Areas.trading.mapNotNull(barterInv::getItem).map { it.type }
+            val tradableItems = ItemDataManager.getTradableItems(*tradingItems.toTypedArray())
+
+            val currentPage = page[player]!!
+            val chunkedTradableItems = tradableItems.chunked(36).getOrNull(currentPage) ?: listOf()
+
+            for ((i, slot) in Areas.tradable.withIndex()) {
+                val item = chunkedTradableItems.getOrNull(i)
+                    ?.let { ItemUtil.create(it, lore = tradableLore) }
+                    ?: Panels.fill
+                barterInv.setItem(slot, item)
+            }
+
+            player.updateInventory()
+        }
+        repeat(page[player]!! + 1) {
+            updateGui()
+            if (barterInv.getItem(3) != Panels.fill) return@repeat
+            page[player] = it
         }
     }
 
@@ -116,8 +116,8 @@ object GuiBarterEvent : Listener {
 
         val playerInv = event.view.bottomInventory as PlayerInventory
         val barterInv = event.view.topInventory
-        val player = event.player as Player
         val leftoverItems = Areas.trading.mapNotNull(barterInv::getItem)
+        val player = event.player as Player
 
         playerInv.addOrDropItem(*leftoverItems.toTypedArray())
         player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
