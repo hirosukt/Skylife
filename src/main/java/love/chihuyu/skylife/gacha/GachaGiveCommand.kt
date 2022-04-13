@@ -21,15 +21,15 @@ object GachaGiveCommand : Command("gachagive") {
         }?.let { sender.sendRawMessage(it); return }
 
         val target = sender.server.onlinePlayers.find { it.displayName == args[0] }
-        val gacha = GachaData.pairString[args[1]]
+        val gacha = GachaData.data[args[1]]
         when {
             target == null -> "ターゲットが見つかりませんでした。"
             gacha == null -> "ガチャ券が見つかりませんでした。"
             else -> null
         }?.let { sender.sendRawMessage(it); return }
 
-        val amount = if (args.size == 2) 1 else args[2].toIntOrNull() ?: 1
-        target!!.inventory.addOrDropItem(gacha!!.getItem(amount))
+        val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
+        target!!.inventory.addOrDropItem(gacha!!.getItemStack(amount))
     }
 
     override fun onTabComplete(
@@ -38,7 +38,7 @@ object GachaGiveCommand : Command("gachagive") {
         args: Array<out String>
     ): List<String> {
         val playerNames = sender.server.onlinePlayers.toTypedArray().map { it.displayName }
-        val gachaNames = GachaData.pairString.keys.toList()
+        val gachaNames = GachaData.data.keys.toList()
         val amounts = listOf("1", "16", "32", "64")
 
         return when (args.size) {
