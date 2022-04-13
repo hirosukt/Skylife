@@ -37,7 +37,7 @@ object Scoreboard {
                     getScore("      ").score = 6
                     getScore("     ").score = 5
                     getScore("    ").score = 4
-                    getScore("食材ガチャまで $nextSyokuryoGacha").score = 3
+                    getScore("食料ガチャまで $nextSyokuryoGacha").score = 3
                     getScore("建材ガチャまで $nextKenzaiGacha").score = 2
                     getScore(" ").score = 1
                     getScore("§6§l╋━━━━━━━━━━━━━━━━━╋").score = 0

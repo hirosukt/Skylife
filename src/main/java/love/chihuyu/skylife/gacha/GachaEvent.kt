@@ -46,7 +46,7 @@ object GachaEvent : Listener {
 
                 if ((row[Stats.foodConsumed] + 1) % 32 != 0) return@newSuspendedTransaction
 
-                GachaStorages.increment(GachaStorages.syokuryoGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+                GachaStorages.increment(GachaStorages.shokuryo) { GachaStorages.id eq row[Users.gachaStorageId] }
                 player.playSound(player.location, MEOW, 1f, 1f)
                 player.sendRawMessage(nyamazon("食料"))
             }
@@ -69,7 +69,7 @@ object GachaEvent : Listener {
 
                 if ((row[Stats.blockPlaced] + 1) % 64 != 0) return@newSuspendedTransaction
 
-                GachaStorages.increment(GachaStorages.kenzaiGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+                GachaStorages.increment(GachaStorages.kenzai) { GachaStorages.id eq row[Users.gachaStorageId] }
                 player.playSound(player.location, MEOW, 1f, 1f)
                 player.sendRawMessage(nyamazon("建材"))
             }
@@ -88,7 +88,7 @@ object GachaEvent : Listener {
                     .select { Users.uuid eq player.uniqueId }.single()
 
                 Stats.increment(Stats.toolBroken) { Stats.id eq row[Users.statsId] }
-                GachaStorages.increment(GachaStorages.kinroKanshaGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+                GachaStorages.increment(GachaStorages.kinrokansha) { GachaStorages.id eq row[Users.gachaStorageId] }
             }
             player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
             player.sendRawMessage(nyamazon("勤労感謝"))

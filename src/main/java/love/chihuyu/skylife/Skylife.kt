@@ -10,6 +10,8 @@ import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaGiveCommand
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
+import love.chihuyu.skylife.gachastorage.GachaStorageCommand
+import love.chihuyu.skylife.gachastorage.GachaStorageEvent
 import love.chihuyu.skylife.scoreboard.Scoreboard
 import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
@@ -38,8 +40,9 @@ class Skylife : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        val enabledCommands = setOf(BarterCommand, GachaGiveCommand, GachaShopCommand)
-        val enabledEvents = setOf(this, BarterEvent, GachaEvent, GachaShopEvent)
+        val enabledCommands =
+            setOf(BarterCommand, GachaGiveCommand, GachaShopCommand, GachaStorageCommand)
+        val enabledEvents = setOf(this, BarterEvent, GachaEvent, GachaShopEvent, GachaStorageEvent)
         enabledCommands.forEach { it.register() }
         enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
         logger.info("This Plug has Enabled")

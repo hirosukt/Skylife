@@ -19,10 +19,15 @@ commands:
   gachagive:
     aliases:
       - "gg"
+  gachastorage:
+    aliases:
+      - "gs"
 permissions:
   skylife.command.*:
     default: op
   skylife.command.barter:
     default: true
   skylife.command.gachashop:
+    default: true
+  skylife.command.gachastorage:
     default: true
