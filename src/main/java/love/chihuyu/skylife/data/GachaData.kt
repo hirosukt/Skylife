@@ -1,5 +1,6 @@
 package love.chihuyu.skylife.data
 
+import love.chihuyu.skylife.util.Randomizer
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
@@ -25,7 +26,7 @@ object GachaData {
         5010,
         null,
         null,
-        mapOf(
+        Randomizer(
             Material.WOODEN_SWORD to 3,
             Material.WOODEN_SHOVEL to 3,
             Material.WOODEN_PICKAXE to 3,
@@ -75,7 +76,7 @@ object GachaData {
         5020,
         13,
         Material.IRON_INGOT to 1,
-        mapOf(
+        Randomizer(
             // 外れ10％
             Material.COAL_ORE to 5,
             Material.COPPER_ORE to 5,
@@ -103,7 +104,7 @@ object GachaData {
         5030,
         null,
         null,
-        mapOf(
+        Randomizer(
             // ハズレ 9%
             Material.PUFFERFISH to 3,
             Material.ROTTEN_FLESH to 3,
@@ -157,7 +158,7 @@ object GachaData {
         5040,
         null,
         null,
-        mapOf(
+        Randomizer(
             Material.STONE to 1,
             Material.GRANITE to 1,
             Material.POLISHED_GRANITE to 1,
