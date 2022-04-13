@@ -8,13 +8,13 @@ object GachaData {
         // NOTE:
         // - val to <コマンドで受け取る文字列>
         // - 変数宣言はより下の変数を受け取れないので関数として上に置いている
-        KinroKanshaGacha to "kinrokansha",
-        KosekiGacha to "koseki",
-        ShokuryoGacha to "shokuryo",
-        KenzaiGacha to "kenzai"
+        kinroKanshaGacha to "kinrokansha",
+        kosekiGacha to "koseki",
+        shokuryoGacha to "shokuryo",
+        kenzaiGacha to "kenzai"
     )
 
-    val KinroKanshaGacha = GachaRecord(
+    val kinroKanshaGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.AQUA}-=+ 勤労感謝ガチャ +=-",
         listOf(
@@ -64,7 +64,7 @@ object GachaData {
         )
     )
 
-    val KosekiGacha = GachaRecord(
+    val kosekiGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.BLUE}>=+ 鉱石ガチャ +=<",
         listOf(
@@ -92,7 +92,7 @@ object GachaData {
         )
     )
 
-    val ShokuryoGacha = GachaRecord(
+    val shokuryoGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.GOLD}={+ 食料ガチャ +}=",
         listOf(
@@ -146,7 +146,7 @@ object GachaData {
         )
     )
 
-    val KenzaiGacha = GachaRecord(
+    val kenzaiGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.GREEN}<+- 建材ガチャ -+>",
         listOf(
