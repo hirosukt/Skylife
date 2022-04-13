@@ -34,10 +34,3 @@ fun Inventory.removeAsPossible(desiredAmount: Int, isToBeRemoved: (ItemStack) ->
 fun Inventory.removeAsPossible(desiredAmount: Int, type: Material): Int {
     return this.removeAsPossible(desiredAmount) { _, item -> item.type == type }
 }
-
-fun Player.dropItemThere(vararg items: ItemStack) =
-    items.forEach { this.world.dropItemNaturally(this.location, it) }
-
-fun ItemStack.getItemMetaOrNull() = if (hasItemMeta()) itemMeta!! else null
-fun ItemStack.getCustomModelDataOrNull() =
-    if (hasItemMeta() && itemMeta?.hasCustomModelData() == true) itemMeta!!.customModelData else null

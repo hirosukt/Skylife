@@ -5,11 +5,13 @@ import org.bukkit.Material
 
 object GachaData {
     private fun enabled() = listOf(
-        // Pair(GachaDataRecord, コマンドで受け取る文字列)
-        KinroKanshaGacha to "KinroKanshaGacha",
-        KosekiGacha to "KosekiGacha",
-        SyokuryoGacha to "SyokuryoGacha",
-        KenzaiGacha to "KenzaiGacha"
+        // NOTE:
+        // - val to <コマンドで受け取る文字列>
+        // - 変数宣言はより下の変数を受け取れないので関数として上に置いている
+        KinroKanshaGacha to "kinrokansha",
+        KosekiGacha to "koseki",
+        ShokuryoGacha to "shokuryo",
+        KenzaiGacha to "kenzai"
     )
 
     val KinroKanshaGacha = GachaRecord(
@@ -90,7 +92,7 @@ object GachaData {
         )
     )
 
-    val SyokuryoGacha = GachaRecord(
+    val ShokuryoGacha = GachaRecord(
         Material.PAPER,
         "${ChatColor.GOLD}={+ 食料ガチャ +}=",
         listOf(
@@ -536,7 +538,7 @@ object GachaData {
     )
 
     val pairString = enabled().associate { it.second to it.first }
-    val pairCustomModelData = enabled().associate { it.first.customModelData to it.first }
+    val pairCustomModelData = enabled().associate { (gacha) -> gacha.customModelData to gacha }
     val buyables = enabled()
         .filter { (gacha) -> gacha.shopData?.customModelData is Int }
         .associate { (gacha) -> gacha.shopData!!.customModelData to gacha }

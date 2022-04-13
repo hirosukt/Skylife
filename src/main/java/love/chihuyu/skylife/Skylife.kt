@@ -1,15 +1,16 @@
 package love.chihuyu.skylife
 
+// import love.chihuyu.skylife.scoreboard.ScoreboardStats
+import love.chihuyu.skylife.barter.BarterCommand
+import love.chihuyu.skylife.barter.BarterEvent
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.database.GachasTable
-import love.chihuyu.skylife.database.UsersTable
-import love.chihuyu.skylife.gacha.GachaCommand
+import love.chihuyu.skylife.database.UserEntity
+import love.chihuyu.skylife.database.User
 import love.chihuyu.skylife.gacha.GachaEvent
+import love.chihuyu.skylife.gacha.GachaGiveCommand
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
-import love.chihuyu.skylife.gui.GuiBarterCommand
-import love.chihuyu.skylife.gui.GuiBarterEvent
-import love.chihuyu.skylife.scoreboard.ScoreboardStats
+import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -19,7 +20,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class Skylife : JavaPlugin(), Listener {
@@ -33,55 +36,58 @@ class Skylife : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        // Plugin startup logic
-        logger.info("plugin has loaded.")
-
-        // config fix
-        config.options().copyDefaults(true)
-        saveResource("config.yml", false)
-
-        Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", driver = "org.sqlite.JDBC")
-        transaction {
-            SchemaUtils.create(UsersTable)
-            SchemaUtils.createMissingTablesAndColumns(UsersTable)
-        }
-
-        Database.connect("jdbc:sqlite:${plugin.dataFolder}/gachastorages.db", driver = "org.sqlite.JDBC")
-        transaction {
-            SchemaUtils.create(GachasTable)
-            SchemaUtils.createMissingTablesAndColumns(GachasTable)
-        }
+        val enabledCommands = setOf(BarterCommand, GachaGiveCommand, GachaShopCommand)
+        val enabledEvents = setOf(this, BarterEvent, GachaEvent, GachaShopEvent)
+        enabledCommands.forEach { it.register() }
+        enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
+        logger.info("This Plug has Enabled")
 
         ItemDataManager.checkDuplicate()
-        listOf(GuiBarterCommand, GachaCommand, GachaShopCommand).forEach { it.register() }
-        listOf(this, GuiBarterEvent, GachaEvent, GachaShopEvent).forEach { server.pluginManager.registerEvents(it, this) }
+        logger.info("Debug Code has Ran")
+
+        if (!plugin.dataFolder.exists()) {
+            config.options().copyDefaults(true)
+            saveResource("config.yml", false)
+        }
+        Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", "org.sqlite.JDBC")
+        transaction {
+            SchemaUtils.create(User)
+            SchemaUtils.createMissingTablesAndColumns(User)
+        }
+        logger.info("This Plugin has Loaded")
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
-        logger.info("plugin has unloaded.")
+        logger.info("This Plugin has Disabled")
     }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         val player = event.player
+        var joinMessage = "${ChatColor.YELLOW}${player.name} joined the game"
+
+        if (!player.hasPlayedBefore()) {
+            joinMessage += "${ChatColor.LIGHT_PURPLE} (First Join)"
+            player.gameMode = GameMode.SURVIVAL
+            player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
+
+            player.teleport(Location(player.world, 0.0, 64.0, 0.0))
+            player.sendTitle("${ChatColor.GOLD}-= Welcome to Skylife =-", "", 10, 70, 20)
+        }
+
+        UserEntity.findOrNew(player).uuid = EntityID(player.uniqueId, User)
+
+//        transaction {
+//            UserTable.insertIgnore { it[uuid] = player.uniqueId }
+//        }
+
+        event.joinMessage = joinMessage
+        // ScoreboardStats.update(player)
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
-
-        event.joinMessage = ChatColor.YELLOW.toString() + "${player.name} joined the game."
-
-        ScoreboardStats.update(player)
-
-        event.joinMessage += ChatColor.LIGHT_PURPLE.toString() + " (First join)"
-        player.gameMode = GameMode.SURVIVAL
-        player.bedSpawnLocation = Location(player.world, 0.0, 64.0, 0.0)
-        player.teleport(Location(player.world, 0.0, 64.0, 0.0))
-        player.sendTitle(ChatColor.GOLD.toString() + "-= Welcome to Skylife =-", "", 10, 70, 20)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        val player = event.player
-
-        event.quitMessage = ChatColor.YELLOW.toString() + "${player.name} left the game."
+        event.player.world.playSound(event.player.location, MEOW, 1f, 1f)
     }
 }

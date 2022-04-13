@@ -1,5 +1,5 @@
-package love.chihuyu.skylife.gui.constants
-/* ktlint-disable no-multi-spaces dot-spacing */
+package love.chihuyu.skylife.barter.constants
+
 /**
  * @property trading the area in which player can put items.
  * @property tradable the area in which tradable items are displayed.
