@@ -44,14 +44,6 @@ task ktlint(type: JavaExec, group: "verification") {
 
 check.dependsOn ktlint
 
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    ignoreExitValue true
-    description = "Fix Kotlin code style deviations."
-    classpath = configurations.ktlint
-    main = "com.github.shyiko.ktlint.Main"
-    args "-F", "src/**/*.kt"
-}
-
 def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -87,7 +79,6 @@ jar {
 }
 
 compileKotlin {task ->
-    task.dependsOn ktlintFormat
     kotlinOptions {
         jvmTarget = "1.8"
     }
