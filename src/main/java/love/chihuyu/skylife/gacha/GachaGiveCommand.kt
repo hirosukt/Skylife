@@ -14,16 +14,22 @@ object GachaGiveCommand : Command("gachagive") {
             return
         }
 
-        // TODO: Error Handling
-        val target = sender.server.onlinePlayers.find { it.displayName == args[0] } ?: return
-        val gacha = GachaData.pairString[args[1]] ?: return
-        val amount = try {
-            args[2].toIntOrNull() ?: 1
-        } catch (e: IndexOutOfBoundsException) {
-            1
-        }
+        when (args.size) {
+            1 -> "ターゲットを指定してください。"
+            2 -> "ガチャ券を指定してください。"
+            else -> null
+        }?.let { sender.sendRawMessage(it); return }
 
-        target.inventory.addOrDropItem(gacha.getItem(amount))
+        val target = sender.server.onlinePlayers.find { it.displayName == args[0] }
+        val gacha = GachaData.pairString[args[1]]
+        when {
+            target == null -> "ターゲットが見つかりませんでした。"
+            gacha == null -> "ガチャ券が見つかりませんでした。"
+            else -> null
+        }?.let { sender.sendRawMessage(it); return }
+
+        val amount = if (args.size == 2) 1 else args[2].toIntOrNull() ?: 1
+        target!!.inventory.addOrDropItem(gacha!!.getItem(amount))
     }
 
     override fun onTabComplete(

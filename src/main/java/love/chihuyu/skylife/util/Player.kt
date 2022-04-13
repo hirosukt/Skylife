@@ -4,4 +4,4 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 fun Player.dropItemThere(vararg items: ItemStack) =
-    items.forEach { this.world.dropItemNaturally(this.location, it) }
+    items.forEach { if (it.amount != 0) this.world.dropItemNaturally(this.location, it) }

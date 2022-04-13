@@ -1,15 +1,16 @@
 package love.chihuyu.skylife
 
-// import love.chihuyu.skylife.scoreboard.ScoreboardStats
 import love.chihuyu.skylife.barter.BarterCommand
 import love.chihuyu.skylife.barter.BarterEvent
 import love.chihuyu.skylife.data.ItemDataManager
-import love.chihuyu.skylife.database.UserEntity
-import love.chihuyu.skylife.database.User
+import love.chihuyu.skylife.database.GachaStorages
+import love.chihuyu.skylife.database.Stats
+import love.chihuyu.skylife.database.Users
 import love.chihuyu.skylife.gacha.GachaEvent
 import love.chihuyu.skylife.gacha.GachaGiveCommand
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
+import love.chihuyu.skylife.scoreboard.Scoreboard
 import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
@@ -20,9 +21,10 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class Skylife : JavaPlugin(), Listener {
@@ -49,10 +51,12 @@ class Skylife : JavaPlugin(), Listener {
             config.options().copyDefaults(true)
             saveResource("config.yml", false)
         }
-        Database.connect("jdbc:sqlite:${plugin.dataFolder}/userstats.db", "org.sqlite.JDBC")
+
+        val enabledDatabase = arrayOf(Users, Stats, GachaStorages)
+        Database.connect("jdbc:sqlite:${plugin.dataFolder}/skylife.db", "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.create(User)
-            SchemaUtils.createMissingTablesAndColumns(User)
+            SchemaUtils.create(*enabledDatabase)
+            SchemaUtils.createMissingTablesAndColumns(*enabledDatabase)
         }
         logger.info("This Plugin has Loaded")
     }
@@ -75,14 +79,18 @@ class Skylife : JavaPlugin(), Listener {
             player.sendTitle("${ChatColor.GOLD}-= Welcome to Skylife =-", "", 10, 70, 20)
         }
 
-        UserEntity.findOrNew(player).uuid = EntityID(player.uniqueId, User)
-
-//        transaction {
-//            UserTable.insertIgnore { it[uuid] = player.uniqueId }
-//        }
+        transaction {
+            // FIXME: このままでは、テーブル:キーを増やしたときに database not found になる
+            if (!Users.select { Users.uuid eq player.uniqueId }.empty()) return@transaction
+            Users.insert {
+                it[uuid] = player.uniqueId
+                it[statsId] = Stats.insert {} get Stats.id
+                it[gachaStorageId] = GachaStorages.insert {} get GachaStorages.id
+            }
+        }
 
         event.joinMessage = joinMessage
-        // ScoreboardStats.update(player)
+        Scoreboard.update(player)
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
     }
 

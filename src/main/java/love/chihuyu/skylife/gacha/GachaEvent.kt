@@ -1,12 +1,11 @@
 package love.chihuyu.skylife.gacha
 
-import love.chihuyu.skylife.Skylife.Companion.plugin
 import love.chihuyu.skylife.data.GachaData
-import love.chihuyu.skylife.database.UserEntity
-import love.chihuyu.skylife.util.ItemUtil
-import love.chihuyu.skylife.util.MEOW
-import love.chihuyu.skylife.util.addOrDropItem
-import love.chihuyu.skylife.util.getCustomModelDataOrNull
+import love.chihuyu.skylife.database.GachaStorages
+import love.chihuyu.skylife.database.Stats
+import love.chihuyu.skylife.database.Users
+import love.chihuyu.skylife.scoreboard.Scoreboard
+import love.chihuyu.skylife.util.*
 import org.bukkit.ChatColor
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
@@ -17,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 object GachaEvent : Listener {
 
@@ -27,44 +28,72 @@ object GachaEvent : Listener {
     private fun nyamazon(gachaName: String) =
         "${ChatColor.LIGHT_PURPLE}[Nyamazon]${ChatColor.RESET} ${gachaName}ガチャをお届けしました。"
 
-    // HACK:
+    // OPTIMIZE: なんとなくだけど DB とのやり取りが多くて辛そう。
+    // - 愚直に考えると、onJoin, onQuit, onDisable イベントでだけ DB の読み書きをしたら良い気がする。
+    // - onEnable で DB を全部読み込んでオブジェクトにするのは起動が遅くなりそうだし、無駄が多いとも思う。
+    // - onJoin で ResultRaw からオブジェクト化、onQuit, onDisable で Table#update かなぁ。
     @EventHandler
     fun onItemConsume(event: PlayerItemConsumeEvent) {
         val player = event.player
 
-        UserEntity.findOrNew(player).gachas.single().SyokuryoGacha += 1
+        background {
+            newSuspendedTransaction {
+                val row = (Users innerJoin Stats)
+                    .slice(Users.statsId, Users.gachaStorageId, Stats.foodConsumed)
+                    .select { Users.uuid eq player.uniqueId }.single()
 
-        if (UserEntity.findOrNew(player).foodConsumed % 32 != 0) return
-//        player.inventory.addOrDropItem(GachaData.ShokuryoGacha.getItem(1))
-        UserEntity.findOrNew(player).foodConsumed += 1
-        player.playSound(player.location, MEOW, 1f, 1f)
-        player.sendRawMessage(nyamazon("食料"))
+                Stats.increment(Stats.foodConsumed) { Stats.id eq row[Users.statsId] }
+
+                if ((row[Stats.foodConsumed] + 1) % 32 != 0) return@newSuspendedTransaction
+
+                GachaStorages.increment(GachaStorages.syokuryoGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+                player.playSound(player.location, MEOW, 1f, 1f)
+                player.sendRawMessage(nyamazon("食料"))
+            }
+        }
+
+        Scoreboard.update(player)
     }
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
         val player = event.player
 
-        UserEntity.findOrNew(player).blockPlaced += 1
+        background {
+            newSuspendedTransaction {
+                val row = (Users innerJoin Stats innerJoin GachaStorages)
+                    .slice(Users.statsId, Users.gachaStorageId, Stats.blockPlaced)
+                    .select { Users.uuid eq player.uniqueId }.single()
 
-        if (UserEntity.findOrNew(player).blockPlaced % 64 != 0) return
-//        player.inventory.addOrDropItem(GachaData.KenzaiGacha.getItem(1))
-        UserEntity.findOrNew(player).gachas.single().KenzaiGacha += 1
-        plugin.logger.info(UserEntity.findOrNew(player).gachas.single().KenzaiGacha.toString())
-        player.playSound(player.location, MEOW, 1f, 1f)
-        player.sendRawMessage(nyamazon("建材"))
+                Stats.increment(Stats.blockPlaced) { Stats.id eq row[Users.statsId] }
+
+                if ((row[Stats.blockPlaced] + 1) % 64 != 0) return@newSuspendedTransaction
+
+                GachaStorages.increment(GachaStorages.kenzaiGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+                player.playSound(player.location, MEOW, 1f, 1f)
+                player.sendRawMessage(nyamazon("建材"))
+            }
+        }
+
+        Scoreboard.update(player)
     }
 
     @EventHandler
     fun onToolBroken(event: PlayerItemBreakEvent) {
         val player = event.player
 
-        UserEntity.findOrNew(player).toolBroken += 1
+        background {
+            newSuspendedTransaction {
+                val row = Users.slice(Users.statsId, Users.gachaStorageId)
+                    .select { Users.uuid eq player.uniqueId }.single()
 
-//        player.inventory.addOrDropItem(GachaData.KinroKanshaGacha.getItem(1))
-        UserEntity.findOrNew(player).gachas.single().KinroKansha += 1
-        player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
-        player.sendRawMessage(nyamazon("勤労感謝"))
+                Stats.increment(Stats.toolBroken) { Stats.id eq row[Users.statsId] }
+                GachaStorages.increment(GachaStorages.kinroKanshaGacha) { GachaStorages.id eq row[Users.gachaStorageId] }
+            }
+            player.playSound(player.location, Sound.ENTITY_CAT_AMBIENT, 1f, 1f)
+            player.sendRawMessage(nyamazon("勤労感謝"))
+            Scoreboard.update(player)
+        }
     }
 
     @EventHandler
@@ -87,6 +116,7 @@ object GachaEvent : Listener {
             5040 -> 16
             else -> 1
         }
+
         // OPTIMIZE: なんとなく無駄がある気がする
         val gachaTimes = if (player.isSneaking) usedItem.amount else 1
         val dropItems = mutableListOf<ItemStack>()
@@ -100,8 +130,8 @@ object GachaEvent : Listener {
                 dropItems.add(dropItem)
             }
         }
-        player.inventory.addOrDropItem(*dropItems.toTypedArray())
         usedItem.amount -= gachaTimes
+        player.inventory.addOrDropItem(*dropItems.toTypedArray())
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
     }
 }

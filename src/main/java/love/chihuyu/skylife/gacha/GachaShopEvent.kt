@@ -18,19 +18,17 @@ import org.bukkit.inventory.PlayerInventory
 object GachaShopEvent : Listener {
     @EventHandler
     fun onClick(event: InventoryClickEvent) {
-        if (event.view.title != "GachaShop") return
+        if (event.view.topInventory != GachaShopGui.gachaShopGui) return
 
         event.isCancelled = true
 
-        val clickedInvType = event.clickedInventory?.type ?: return
+        val clickedInv = event.clickedInventory ?: return
         val playerInv = event.view.bottomInventory as PlayerInventory
-        if (clickedInvType == playerInv.type) return
-
-        val clickedItem = event.clickedInventory?.getItem(event.slot) ?: return
+        if (clickedInv.type == playerInv.type) return
+        val clickedItem = clickedInv.getItem(event.slot) ?: return
         val boughtItemData = GachaData.buyables[clickedItem.getCustomModelDataOrNull()] ?: return
 
-        val shopData = boughtItemData.shopData!!
-        val price = shopData.price
+        val player = event.whoClicked as Player
         val amount = when (event.click) {
             ClickType.SHIFT_LEFT -> 64
             ClickType.SHIFT_RIGHT -> 16
@@ -38,17 +36,17 @@ object GachaShopEvent : Listener {
             ClickType.RIGHT -> 32
             else -> 0
         }
-
+        val price = boughtItemData.shopData!!.price
         val removedCount = playerInv.removeAsPossible(amount * price.second, price.first)
-        playerInv.addOrDropItem(boughtItemData.getItem(removedCount))
-        val player = event.whoClicked as Player
         val sound = if (removedCount == 0) MEOW else Sound.ENTITY_EXPERIENCE_ORB_PICKUP
+
+        playerInv.addOrDropItem(boughtItemData.getItem(removedCount))
         player.playSound(player.location, sound, 0.8f, 1f)
     }
 
     @EventHandler
     fun onOpen(event: InventoryOpenEvent) {
-        if (event.view.title != "GachaShop") return
+        if (event.view.topInventory != GachaShopGui.gachaShopGui) return
 
         val player = event.player as Player
         player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_OPEN, 0.8f, 1f)
@@ -56,7 +54,7 @@ object GachaShopEvent : Listener {
 
     @EventHandler
     fun onClose(event: InventoryCloseEvent) {
-        if (event.view.title != "GachaShop") return
+        if (event.view.topInventory != GachaShopGui.gachaShopGui) return
 
         val player = event.player as Player
         player.playSound(player.location, Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1f)
