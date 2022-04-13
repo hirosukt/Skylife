@@ -3,19 +3,10 @@ package love.chihuyu.skylife.data
 import love.chihuyu.skylife.util.Randomizer
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import kotlin.reflect.full.declaredMemberProperties
 
 object GachaData {
-    private fun enabled() = listOf(
-        // NOTE:
-        // - val to <コマンドで受け取る文字列>
-        // - 変数宣言はより下の変数を受け取れないので関数として上に置いている
-        kinroKanshaGacha to "kinrokansha",
-        kosekiGacha to "koseki",
-        shokuryoGacha to "shokuryo",
-        kenzaiGacha to "kenzai"
-    )
-
-    val kinroKanshaGacha = GachaRecord(
+    val kinrokanshaGacha = Gacha(
         Material.PAPER,
         "${ChatColor.AQUA}-=+ 勤労感謝ガチャ +=-",
         listOf(
@@ -65,7 +56,7 @@ object GachaData {
         )
     )
 
-    val kosekiGacha = GachaRecord(
+    val kosekiGacha = Gacha(
         Material.PAPER,
         "${ChatColor.BLUE}>=+ 鉱石ガチャ +=<",
         listOf(
@@ -93,7 +84,7 @@ object GachaData {
         )
     )
 
-    val shokuryoGacha = GachaRecord(
+    val shokuryoGacha = Gacha(
         Material.PAPER,
         "${ChatColor.GOLD}={+ 食料ガチャ +}=",
         listOf(
@@ -147,7 +138,7 @@ object GachaData {
         )
     )
 
-    val kenzaiGacha = GachaRecord(
+    val kenzaiGacha = Gacha(
         Material.PAPER,
         "${ChatColor.GREEN}<+- 建材ガチャ -+>",
         listOf(
@@ -538,9 +529,12 @@ object GachaData {
         )
     )
 
-    val pairString = enabled().associate { it.second to it.first }
-    val pairCustomModelData = enabled().associate { (gacha) -> gacha.customModelData to gacha }
-    val buyables = enabled()
-        .filter { (gacha) -> gacha.shopData?.customModelData is Int }
-        .associate { (gacha) -> gacha.shopData!!.customModelData to gacha }
+    val data: Map<String, Gacha> = GachaData::class.declaredMemberProperties
+        .map { it.get(this) }
+        .filterIsInstance<Gacha>()
+        .associateBy { it.name }
+
+    val buyables = data.values
+        .filter { it.shopData?.customModelData is Int }
+        .associateBy { it.customModelData }
 }

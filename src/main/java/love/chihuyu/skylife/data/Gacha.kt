@@ -8,7 +8,7 @@ import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 
-data class GachaRecord(
+data class Gacha(
     override val material: Material,
     override val name: String,
     val lore: List<String>,
