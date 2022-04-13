@@ -32,7 +32,7 @@ object GachaStorageEvent : Listener {
         if (clickedInv.type == playerInv.type) return
         val clickedItem = clickedInv.getItem(event.slot) ?: return
         val id = clickedItem.getCustomModelDataOrNull() ?: return
-        val gacha = GachaData.pairCustomModelData[id - 10000] ?: return
+        val gacha = GachaData.pairCustomData[id - 10000] ?: return
         val player = event.whoClicked as Player
         val amount = when (event.click) {
             ClickType.SHIFT_LEFT -> 64
@@ -59,7 +59,7 @@ object GachaStorageEvent : Listener {
             }
         }
         val sound = if (removedCount == 0) MEOW else Sound.ENTITY_EXPERIENCE_ORB_PICKUP
-        playerInv.addOrDropItem(gacha.getItem(removedCount))
+        playerInv.addOrDropItem(gacha.getItemStack(removedCount))
         player.playSound(player.location, sound, 0.8f, 1f)
         GachaStorageGui.update(player)
         player.updateInventory()

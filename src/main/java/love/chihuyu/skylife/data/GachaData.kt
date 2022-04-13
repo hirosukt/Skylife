@@ -537,4 +537,7 @@ object GachaData {
     val buyables = data.values
         .filter { it.shopData?.customModelData is Int }
         .associateBy { it.customModelData }
+
+    val pairCustomData = data.values
+        .associateBy { it.customModelData }
 }

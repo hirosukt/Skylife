@@ -1,6 +1,6 @@
 package love.chihuyu.skylife.gachastorage
 
-import love.chihuyu.skylife.data.GachaData.pairString
+import love.chihuyu.skylife.data.GachaData
 import love.chihuyu.skylife.database.GachaStorages
 import love.chihuyu.skylife.database.Users
 import love.chihuyu.skylife.util.ItemUtil
@@ -32,7 +32,7 @@ object GachaStorageGui {
         }
 
         enabled.forEach {
-            pairString[it.name]?.let { gacha ->
+            GachaData.data[it.name]?.let { gacha ->
                 val item = ItemUtil.create(
                     gacha.material,
                     gacha.name,
