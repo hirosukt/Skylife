@@ -21,7 +21,7 @@ data class Gacha(
         if (price == null || slot == null) null
         else Shop(material, name, slot, customModelData + 5000, price)
 
-    override fun getItem(amount: Int) = ItemUtil
+    override fun getItemStack(amount: Int) = ItemUtil
         .create(material, name, amount, true, lore, customModelData)
         .apply {
             addUnsafeEnchantment(Enchantment.MENDING, 0)

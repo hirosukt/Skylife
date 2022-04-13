@@ -18,6 +18,6 @@ data class Shop(
         *additionalLore.toTypedArray()
     )
 
-    override fun getItem(amount: Int) =
+    override fun getItemStack(amount: Int) =
         ItemUtil.create(material, name, amount, false, lore, customModelData)
 }

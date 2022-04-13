@@ -10,7 +10,7 @@ object GachaShopGui {
         .apply {
             repeat(size) { setItem(it, Panels.fill) }
             GachaData.buyables.values.mapNotNull { it.shopData }
-                .forEach { setItem(it.slot, it.getItem(1)) }
+                .forEach { setItem(it.slot, it.getItemStack(1)) }
         }
 
     fun open(player: Player) {
