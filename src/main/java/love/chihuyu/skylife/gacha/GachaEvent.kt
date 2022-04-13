@@ -102,7 +102,7 @@ object GachaEvent : Listener {
         if (event.clickedBlock?.type?.isInteractable == true) return
         if (!event.hasItem()) return
         val usedItem = event.item ?: return
-        val gacha = GachaData.pairCustomModelData[usedItem.getCustomModelDataOrNull()] ?: return
+        val gacha = GachaData.buyables[usedItem.getCustomModelDataOrNull()] ?: return
 
         event.isCancelled = true
 

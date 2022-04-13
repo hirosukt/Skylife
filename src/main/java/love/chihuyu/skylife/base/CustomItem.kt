@@ -6,5 +6,5 @@ import org.bukkit.inventory.ItemStack
 interface CustomItem {
     val material: Material
     val name: String
-    fun getItem(amount: Int): ItemStack
+    fun getItemStack(amount: Int): ItemStack
 }

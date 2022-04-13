@@ -40,7 +40,7 @@ object GachaShopEvent : Listener {
         val removedCount = playerInv.removeAsPossible(amount * price.second, price.first)
         val sound = if (removedCount == 0) MEOW else Sound.ENTITY_EXPERIENCE_ORB_PICKUP
 
-        playerInv.addOrDropItem(boughtItemData.getItem(removedCount))
+        playerInv.addOrDropItem(boughtItemData.getItemStack(removedCount))
         player.playSound(player.location, sound, 0.8f, 1f)
     }
 
