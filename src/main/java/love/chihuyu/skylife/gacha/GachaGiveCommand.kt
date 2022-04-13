@@ -28,7 +28,7 @@ object GachaGiveCommand : Command("gachagive") {
             else -> null
         }?.let { sender.sendRawMessage(it); return }
 
-        val amount = if (args.size == 2) 1 else args[2].toIntOrNull() ?: 1
+        val amount = args.getOrNull(2)?.toIntOrNull() ?: 1
         target!!.inventory.addOrDropItem(gacha!!.getItemStack(amount))
     }
 
