@@ -99,6 +99,6 @@ class Skylife : JavaPlugin(), Listener {
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        event.player.world.playSound(event.player.location, MEOW, 1f, 1f)
+        event.player.world.playSound(event.player.location, Sound.BLOCK_WOODEN_DOOR_CLOSE, 1f, 1f)
     }
 }
