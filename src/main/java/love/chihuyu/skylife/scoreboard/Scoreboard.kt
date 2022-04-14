@@ -40,8 +40,8 @@ object Scoreboard {
                     getScore("プレイヤー数: ${plugin.server.onlinePlayers.size}").score = 6
                     getScore("  ").score = 5
                     getScore("次のガチャまで").score = 4
-                    getScore("食 $GRAY> $WHITE$nextSyokuryoGacha${GRAY}個").score = 3
-                    getScore("建 $GRAY> $WHITE$nextKenzaiGacha${GRAY}ブロック").score = 2
+                    getScore("食 $GRAY> $WHITE$nextSyokuryoGacha${GRAY}/32").score = 3
+                    getScore("建 $GRAY> $WHITE$nextKenzaiGacha${GRAY}/64").score = 2
                     getScore(" ").score = 1
                     getScore("$GOLD$STRIKETHROUGH━━━━━━━━━━━━━━━━━━━").score = 0
                     displaySlot = DisplaySlot.SIDEBAR
