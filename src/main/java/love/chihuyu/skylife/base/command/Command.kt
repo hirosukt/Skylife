@@ -1,4 +1,4 @@
-package love.chihuyu.skylife.base
+package love.chihuyu.skylife.base.command
 
 import love.chihuyu.skylife.Skylife.Companion.plugin
 import org.bukkit.command.Command
