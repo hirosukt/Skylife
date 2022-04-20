@@ -1,8 +1,6 @@
 package love.chihuyu.skylife.gacha
 
-import love.chihuyu.skylife.Skylife.Companion.plugin
-import love.chihuyu.skylife.base.command.Command
-import love.chihuyu.skylife.base.command.SubCommandDSL
+import love.chihuyu.skylife.base.Command
 import love.chihuyu.skylife.data.GachaData
 import love.chihuyu.skylife.util.addOrDropItem
 import org.bukkit.command.CommandSender
@@ -34,8 +32,12 @@ object GachaGiveCommand : Command("gachagive") {
         target!!.inventory.addOrDropItem(gacha!!.getItemStack(amount))
     }
 
-    override fun onTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String> {
-        val playerNames = sender.server.onlinePlayers.map(Player::getDisplayName)
+    override fun onTabComplete(
+        sender: CommandSender,
+        label: String,
+        args: Array<out String>
+    ): List<String> {
+        val playerNames = sender.server.onlinePlayers.toTypedArray().map { it.displayName }
         val gachaNames = GachaData.data.keys.toList()
         val amounts = listOf("1", "16", "32", "64")
 
@@ -46,18 +48,4 @@ object GachaGiveCommand : Command("gachagive") {
             else -> listOf()
         }.filter { it.contains(args[args.size - 1]) }
     }
-}
-
-object GachaGiveCommandX : SubCommandDSL("gacha", {
-    "give" (2..3) run@{ _, (targetName, gachaName, amountStr) ->
-        val target = plugin.server.onlinePlayers.find { it.displayName == targetName } ?: return@run false
-        val gacha = GachaData.data[gachaName] ?: return@run false
-        val amount = amountStr.toIntOrNull() ?: 1
-
-        target.inventory.addOrDropItem(gacha.getItemStack(amount))
-
-        return@run false
-    }
-}) {
-    val noooo = listOf<String>("1", "2")
 }
