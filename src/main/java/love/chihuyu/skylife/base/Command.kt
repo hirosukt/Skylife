@@ -19,7 +19,8 @@ abstract class Command(private val name: String) : CommandExecutor, TabCompleter
         label: String,
         args: Array<out String>
     ): Boolean {
-        return onCommand(sender, label, args) ?: true
+        onCommand(sender, label, args)
+        return true
     }
 
     override fun onTabComplete(
@@ -31,7 +32,7 @@ abstract class Command(private val name: String) : CommandExecutor, TabCompleter
         return onTabComplete(sender, label, args)
     }
 
-    abstract fun onCommand(sender: CommandSender, label: String, args: Array<out String>): Boolean?
+    abstract fun onCommand(sender: CommandSender, label: String, args: Array<out String>)
 
     abstract fun onTabComplete(
         sender: CommandSender,
