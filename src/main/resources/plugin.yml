@@ -16,6 +16,7 @@ commands:
       - "gacha"
       - "ga"
       - "g"
+  gachax:
   gachagive:
     aliases:
       - "gg"

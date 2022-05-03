@@ -2,18 +2,18 @@ package love.chihuyu.skylife
 
 import love.chihuyu.skylife.barter.BarterCommand
 import love.chihuyu.skylife.barter.BarterEvent
+import love.chihuyu.skylife.base.Command
 import love.chihuyu.skylife.data.ItemDataManager
 import love.chihuyu.skylife.database.GachaStorages
 import love.chihuyu.skylife.database.Stats
 import love.chihuyu.skylife.database.Users
 import love.chihuyu.skylife.gacha.GachaEvent
-import love.chihuyu.skylife.gacha.GachaGiveCommand
+import love.chihuyu.skylife.gacha.GachaGiveCommandX
 import love.chihuyu.skylife.gacha.GachaShopCommand
 import love.chihuyu.skylife.gacha.GachaShopEvent
 import love.chihuyu.skylife.gachastorage.GachaStorageCommand
 import love.chihuyu.skylife.gachastorage.GachaStorageEvent
 import love.chihuyu.skylife.scoreboard.Scoreboard
-import love.chihuyu.skylife.util.MEOW
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -41,9 +41,10 @@ class Skylife : JavaPlugin(), Listener {
 
     override fun onEnable() {
         val enabledCommands =
-            setOf(BarterCommand, GachaGiveCommand, GachaShopCommand, GachaStorageCommand)
+            setOf(BarterCommand, GachaShopCommand, GachaStorageCommand)
         val enabledEvents = setOf(this, BarterEvent, GachaEvent, GachaShopEvent, GachaStorageEvent)
-        enabledCommands.forEach { it.register() }
+        enabledCommands.forEach(Command::register)
+        GachaGiveCommandX.register()
         enabledEvents.forEach { server.pluginManager.registerEvents(it, this) }
         logger.info("This Plug has Enabled")
 
